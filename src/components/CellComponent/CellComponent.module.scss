@@ -1,0 +1,38 @@
+.cellWrapper {
+  width: 40px;
+  height: 40px;
+  //margin: 1px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border: 1px solid #3f3b81;
+  // TODO add media for mobile
+
+  box-shadow: 3px 3px 1px #ccc;
+  -moz-box-shadow: 3px 3px 1px #ccc;
+  -webkit-box-shadow: 3px 3px 1px #ccc;
+  -khtml-box-shadow: 3px 3px 1px #ccc;
+
+  &.marked {
+    background-color: cornflowerblue;
+    background-image: url("/images/flag.svg");
+    background-size: 60%;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  &.number {
+    background-color: #f7f2eb;
+    font-size: 18px;
+  }
+
+  &.empty {
+    background-color: aliceblue;
+    background-image: url("/images/empty.png");
+  }
+
+  &.close {
+    background-color: cornflowerblue;
+  }
+}

@@ -1,9 +1,11 @@
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { withTranslation } from "react-i18next";
 
 function Home() {
+  const router = useRouter();
   const { t } = useTranslation(["main", "menu"]);
 
   return (
@@ -22,7 +24,7 @@ function Home() {
         </div>
 
         <div className="d-flex">
-          <Link href="/game">
+          <Link href="/game/new">
             <a className="btn btn-primary">{t("start-game")}</a>
           </Link>
         </div>

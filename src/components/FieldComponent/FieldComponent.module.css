@@ -1,0 +1,15 @@
+.filedRow {
+  display: flex;
+  flex-direction: row;
+}
+
+.rowLabel {
+  display: flex;
+  width: 30px;
+  padding: 10px 10px 0 10px;
+  font-size: 18px;
+  background-color: rgb(186, 179, 255);
+
+  align-items: center;
+  justify-content: center;
+}

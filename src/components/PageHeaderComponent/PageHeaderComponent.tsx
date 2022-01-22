@@ -1,13 +1,11 @@
-import { useTranslation } from "next-i18next";
 import Head from "next/head";
+import React from "react";
 
 type PageHeaderProps = {
   title: string;
 };
 
 export default function PageHeaderComponent(props: PageHeaderProps) {
-  const { t } = useTranslation(["common"]);
-
   return (
     <Head>
       <title>Battelfirld game</title>
