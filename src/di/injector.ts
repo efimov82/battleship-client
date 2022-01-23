@@ -9,9 +9,14 @@ import { GameService, WS_GAME_HOST } from "../services/game.service";
 const host = process.env.NEXT_PUBLIC_WS_GAME_HOST;
 
 export const injector: DependencyInjector = makeInjector([
-  //"wss://game-miner-core.herokuapp.com"
   { provide: WS_GAME_HOST, useValue: host },
-  { provide: GameService, useClass: GameService, deps: [WS_GAME_HOST] },
+  // { provide: ACCESS_TOKEN_VALUE, useValue: accessTokenValue },
+  // { provide: GAME_ID_VALUE, useValue: gameIdValue },
+  {
+    provide: GameService,
+    useClass: GameService,
+    deps: [WS_GAME_HOST], // error ??? ACCESS_TOKEN_VALUE, GAME_ID_VALUE
+  },
 ]);
 
 export function useService<T>(token: any): HookTuple<T, DependencyInjector> {

@@ -3,9 +3,11 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
 import { ChangeEvent, FormEvent, FormEventHandler, useState } from "react";
 import { useService } from "../../../src/di/injector";
+import useStorage from "../../../src/hooks/useStorage";
 import { GameService } from "../../../src/services/game.service";
+import { ACCESS_TOKEN } from "../../../src/types/constants";
 
-// game/xxxx-xx-xxxx?player=2
+// game/xxxx-xx-xxxx/join
 const GameJoinPage = () => {
   const router = useRouter();
   const { id, player } = router.query;
@@ -13,6 +15,8 @@ const GameJoinPage = () => {
   const [state, setState] = useState({
     name: "",
   });
+
+  const { setItemToStorage } = useStorage();
 
   const handleChangeName = (event: ChangeEvent<HTMLInputElement>) => {
     const newState = { ...state, name: event.target.value };
@@ -25,13 +29,13 @@ const GameJoinPage = () => {
       return;
     }
 
-    gameService.joinGame(id.toString(), state.name, joinToGameCallback);
+    gameService.joinGame(id.toString(), state.name, joinGameCallback);
   };
 
-  const joinToGameCallback = (response: any) => {
-    // const data = JSON.parse(response);
+  const joinGameCallback = (response: any) => {
     console.log("joinToGameCallback", response);
     if (response.gameId) {
+      setItemToStorage(ACCESS_TOKEN, response.accessToken);
       router.push(`/game/${response.gameId}`);
     }
   };

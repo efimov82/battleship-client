@@ -10,6 +10,8 @@ import { FieldComponent } from "../../src/components/FieldComponent/FieldCompone
 import { useService } from "../../src/di/injector";
 import { GameSettings } from "../../src/types/game.types";
 import { GameType } from "../../src/types/game.enums";
+import useStorage from "../../src/hooks/useStorage";
+import { ACCESS_TOKEN } from "../../src/types/constants";
 
 interface GameProps extends WithTranslation {
   settings: GameSettings;
@@ -45,11 +47,17 @@ function GameNewPage(props: GameProps) {
     gameService.createGame(state.name, state.type, createGameCallback);
   };
 
+  const { setItemToStorage } = useStorage();
+
   // TODO types
   const createGameCallback = (response: any) => {
     // const data = JSON.parse(response);
     console.log("callback createGame", response);
     if (response.gameId) {
+      setItemToStorage(ACCESS_TOKEN, response.accessToken);
+      gameService.setAccessToken(response.accessToken);
+      gameService.setGameId(response.gameId);
+
       router.push(`/game/${response.gameId}`);
     }
   };
