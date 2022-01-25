@@ -10,10 +10,10 @@ import {
   ConnectedGameEvent,
   GameErrorEvent,
   GameEvents,
-  PlayerConnectedEvent,
+  RivalConnectedEvent,
 } from "../classes/GameEvent";
-import { GameEventType } from "../types/game.enums";
-import { GameSettings } from "../types/game.types";
+import { GameEventType } from "../types/common/game.enums";
+import { GameSettings } from "../types/common/game.types";
 
 export const WS_GAME_HOST = "ws://test";
 export class GameService implements IGameService {
@@ -62,9 +62,9 @@ export class GameService implements IGameService {
         this.addEvent(new ConnectedGameEvent());
       });
 
-      this.socket.on(GameEventType.playerConnected, (data: string) => {
+      this.socket.on(GameEventType.rivalConnected, (data: string) => {
         this.addEvent(
-          new PlayerConnectedEvent({
+          new RivalConnectedEvent({
             payload: JSON.parse(data),
           })
         );

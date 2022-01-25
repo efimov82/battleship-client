@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 import { GameEvents } from "../classes/GameEvent";
-import { GameSettings } from "../types/game.types";
+import { GameSettings } from "../types/common/game.types";
 
 export interface IGameService {
   createGame(

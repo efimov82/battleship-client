@@ -8,8 +8,8 @@ import { GameService } from "../../src/services/game.service";
 import { FieldComponent } from "../../src/components/FieldComponent/FieldComponent";
 
 import { useService } from "../../src/di/injector";
-import { GameSettings } from "../../src/types/game.types";
-import { GameType } from "../../src/types/game.enums";
+import { GameSettings } from "../../src/types/common/game.types";
+import { GameType } from "../../src/types/common/game.enums";
 import useStorage from "../../src/hooks/useStorage";
 import { ACCESS_TOKEN } from "../../src/types/constants";
 

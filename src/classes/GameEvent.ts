@@ -1,4 +1,4 @@
-import { GameEventType } from "../types/game.enums";
+import { GameEventType } from "../types/common/game.enums";
 import { Cell } from "./Cell";
 
 abstract class GameEvent<T> {
@@ -35,12 +35,12 @@ export class CheckInGameEvent extends GameEvent<CheckInPayload> {
   type = GameEventType.checkIn;
 }
 
-export class PlayerConnectedEvent extends GameEvent<any> {
-  type = GameEventType.playerConnected;
+export class RivalConnectedEvent extends GameEvent<any> {
+  type = GameEventType.rivalConnected;
 }
 
 export type GameEvents =
   | ConnectedGameEvent
   | GameErrorEvent
   | CheckInGameEvent
-  | PlayerConnectedEvent;
+  | RivalConnectedEvent;

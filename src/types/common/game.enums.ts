@@ -1,9 +1,3 @@
-export enum GameStatus {
-  empty = "empty",
-  open = "open",
-  finished = "finished",
-}
-
 export enum GameType {
   singlePlay = "singlePlay",
   multyPlay = "multyPlay",
@@ -15,6 +9,10 @@ export enum GameEventType {
   createGame = "createGame",
   checkIn = "checkIn",
   joinGame = "joinGame",
-  playerConnected = "playerConnected",
+  rivalConnected = "rivalConnected",
   error = "error",
+}
+
+export enum GameState {
+  created = "created",
 }

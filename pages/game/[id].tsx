@@ -10,7 +10,7 @@ import {
   CheckInGameEvent,
   GameErrorEvent,
   GameEvents,
-  PlayerConnectedEvent,
+  RivalConnectedEvent,
 } from "../../src/classes/GameEvent";
 import { GameBoardComponent } from "../../src/components/GameBoardComponent/GameBoardComponent";
 import { GameErrorComponent } from "../../src/components/GameErrorComponent/GameErrorComponent";
@@ -18,7 +18,7 @@ import { useService } from "../../src/di/injector";
 import useStorage from "../../src/hooks/useStorage";
 import { GameService } from "../../src/services/game.service";
 import { ACCESS_TOKEN } from "../../src/types/constants";
-import { GameEventType } from "../../src/types/game.enums";
+import { GameEventType } from "../../src/types/common/game.enums";
 
 // game/xxxx-xx-xxxx?player=2
 const GamePage = ({ query }) => {
@@ -47,7 +47,7 @@ const GamePage = ({ query }) => {
         case GameEventType.checkIn:
           checkInHandler(event as CheckInGameEvent);
           break;
-        case GameEventType.playerConnected:
+        case GameEventType.rivalConnected:
           playerConnectedHandler(event);
           break;
         case GameEventType.error:
@@ -66,7 +66,7 @@ const GamePage = ({ query }) => {
     setShowField1(true);
   };
 
-  const playerConnectedHandler = (event: PlayerConnectedEvent) => {
+  const playerConnectedHandler = (event: RivalConnectedEvent) => {
     console.log(event);
 
     setShowJoinLink(false);
