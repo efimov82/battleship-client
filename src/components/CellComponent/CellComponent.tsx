@@ -6,15 +6,11 @@ type CellComponentProps = {
   onCellClick: (row: number, col: number) => void;
 };
 
-export function CellComponent({
-  cell,
-  onCellClick,
-}: // onCellMarked,
-CellComponentProps) {
+export function CellComponent(props: CellComponentProps) {
   function getCellClass(cell: Cell): string[] {
     const res = [styles.cellWrapper];
 
-    switch (cell.getType()) {
+    switch (cell.type) {
       case CellTypeEnum.empty:
         res.push(styles.empty);
         break;
@@ -26,22 +22,22 @@ CellComponentProps) {
     return res;
   }
 
-  function cellLeftClick() {
-    onCellClick(cell.getRow(), cell.getCol());
-  }
+  // function cellLeftClick() {
+  //   onCellClick(cell.getRow(), cell.getCol());
+  // }
 
-  function cellonMouseEnter(e) {}
+  // function cellonMouseEnter(e) {}
 
-  function cellonMouseLeave(e) {}
+  // function cellonMouseLeave(e) {}
 
   return (
     <div
-      onClick={cellLeftClick}
-      onMouseEnter={cellonMouseEnter}
-      onMouseLeave={cellonMouseLeave}
+      onClick={() => props.onCellClick(props.cell.row, props.cell.col)}
+      // onMouseEnter={cellonMouseEnter}
+      // onMouseLeave={cellonMouseLeave}
       //onContextMenu={cellRightClick}
-      key={cell.getId()}
-      className={getCellClass(cell).join(" ")}
+      key={props.cell.row}
+      className={getCellClass(props.cell).join(" ")}
     ></div>
   );
 }

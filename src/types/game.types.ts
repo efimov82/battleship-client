@@ -1,16 +1,18 @@
 import { Cell } from "../classes/Cell";
 import { GameStatus, GameType } from "./game.enums";
 
-export type GameSettings = {
-  type: GameType;
+export interface GameSettings {
   rows: number;
   cols: number;
-  ships: {
-    x1: number;
-    x2: number;
-    x3: number;
-    x4: number;
-  };
+  gameType: GameType;
+  ships: ShipsCount;
+}
+
+export type ShipsCount = {
+  x1: number;
+  x2: number;
+  x3: number;
+  x4: number;
 };
 
 export type GameState = {

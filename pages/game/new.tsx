@@ -20,7 +20,7 @@ type GameState = {};
 
 function GameNewPage(props: GameProps) {
   const settings: GameSettings = {
-    type: GameType.singlePlay,
+    gameType: GameType.singlePlay,
     rows: 10,
     cols: 10,
     ships: {
@@ -44,7 +44,7 @@ function GameNewPage(props: GameProps) {
       return;
     }
 
-    gameService.createGame(state.name, state.type, createGameCallback);
+    gameService.createGame(state.name, settings, createGameCallback);
   };
 
   const { setItemToStorage } = useStorage();
@@ -68,7 +68,8 @@ function GameNewPage(props: GameProps) {
   };
 
   const handleChangeType = (event: ChangeEvent<HTMLSelectElement>) => {
-    const newState = { ...state, type: GameType[event.target.value] };
+    const val = event.target.value;
+    const newState = { ...state, type: GameType[val] };
     setState(newState);
   };
 

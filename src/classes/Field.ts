@@ -53,7 +53,9 @@ export class Field {
       (_, rowIndex) => {
         const cellsData = Array.from(
           Array(this.cols).keys(),
-          (_, cellIndex) => new Cell(rowIndex, cellIndex)
+          (_, cellIndex) => {
+            return { row: rowIndex, col: cellIndex, type: CellTypeEnum.empty };
+          }
         );
         return [...cellsData];
       }

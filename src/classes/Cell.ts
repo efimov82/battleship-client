@@ -7,32 +7,37 @@ export enum CellTypeEnum {
   shipX4 = "ship-x4",
 }
 
-export class Cell {
-  shipId: number;
+export type Cell = {
+  row: number;
+  col: number;
+  type: CellTypeEnum;
+};
+// export class Cell {
+//   shipId: number;
 
-  constructor(
-    private row: number,
-    private col: number,
-    private type: CellTypeEnum = CellTypeEnum.empty
-  ) {}
+//   constructor(
+//     private row: number,
+//     private col: number,
+//     private type: CellTypeEnum = CellTypeEnum.empty
+//   ) {}
 
-  setType(type: CellTypeEnum) {
-    this.type = type;
-  }
+//   setType(type: CellTypeEnum) {
+//     this.type = type;
+//   }
 
-  getType(): string {
-    return this.type;
-  }
+//   getType(): string {
+//     return this.type;
+//   }
 
-  getId(): string {
-    return `${this.row}_${this.col}`;
-  }
+//   getId(): string {
+//     return `${this.row}_${this.col}`;
+//   }
 
-  getRow(): number {
-    return this.row;
-  }
+//   getRow(): number {
+//     return this.row;
+//   }
 
-  getCol(): number {
-    return this.col;
-  }
-}
+//   getCol(): number {
+//     return this.col;
+//   }
+// }

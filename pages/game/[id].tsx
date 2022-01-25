@@ -1,44 +1,81 @@
 // import { withTranslation } from "next-i18next";
 // import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { useMount, useUnmount } from "react-use";
 import { Subscription } from "rxjs";
-import { GameEvent, GameEventType } from "../../src/classes/GameEvent";
+import { Cell } from "../../src/classes/Cell";
+import { Field } from "../../src/classes/Field";
+import {
+  CheckInGameEvent,
+  GameErrorEvent,
+  GameEvents,
+  PlayerConnectedEvent,
+} from "../../src/classes/GameEvent";
+import { GameBoardComponent } from "../../src/components/GameBoardComponent/GameBoardComponent";
+import { GameErrorComponent } from "../../src/components/GameErrorComponent/GameErrorComponent";
 import { useService } from "../../src/di/injector";
 import useStorage from "../../src/hooks/useStorage";
 import { GameService } from "../../src/services/game.service";
 import { ACCESS_TOKEN } from "../../src/types/constants";
+import { GameEventType } from "../../src/types/game.enums";
 
 // game/xxxx-xx-xxxx?player=2
 const GamePage = ({ query }) => {
   const router = useRouter();
   const [gameService] = useService<GameService>(GameService);
   const { id, player } = router.query;
+
   const { getItemFromStorage, setItemToStorage } = useStorage();
   const [showJoinLink, setShowJoinLink] = useState(true);
+  const [gameError, setGameError] = useState("");
+  const [showBoard, setShowBoard] = useState(false);
+  const [showField1, setShowField1] = useState(false);
+  const [showField2, setShowField2] = useState(false);
+  const [field1, setField1] = useState<Cell[][]>(null); // Field
+  const [field2, setField2] = useState<Cell[][]>(null);
   let subscription: Subscription;
 
   useMount(() => {
     const accessToken = getItemFromStorage(ACCESS_TOKEN);
 
-    subscription = gameService.getEvents().subscribe((event: GameEvent) => {
+    subscription = gameService.getEvents().subscribe((event: GameEvents) => {
       switch (event.type) {
         case GameEventType.connected:
-          gameService.register(id, accessToken);
+          gameService.checkIn(id, accessToken);
+          break;
+        case GameEventType.checkIn:
+          checkInHandler(event as CheckInGameEvent);
           break;
         case GameEventType.playerConnected:
-          playerConnected(event);
+          playerConnectedHandler(event);
+          break;
+        case GameEventType.error:
+          gameErrorHandler(event as GameErrorEvent);
+          break;
         default:
-          console.log("event:", event);
+          console.log("unkown event:", event);
       }
     });
   });
 
-  const playerConnected = (event: GameEvent) => {
+  const checkInHandler = (event: CheckInGameEvent) => {
+    console.log(event);
+    setField1(event.getPayload().field);
+    setShowBoard(true);
+    setShowField1(true);
+  };
+
+  const playerConnectedHandler = (event: PlayerConnectedEvent) => {
     console.log(event);
 
     setShowJoinLink(false);
+    setShowField2(true);
+  };
+
+  const gameErrorHandler = (event: GameErrorEvent) => {
+    setShowJoinLink(false);
+    setGameError(event.getPayload());
   };
 
   useUnmount(() => {
@@ -50,12 +87,22 @@ const GamePage = ({ query }) => {
     <div className="container">
       {showJoinLink && (
         <p>
-          Link for join:{" "}
+          Join link:{" "}
           <a href={link} target="_blank" rel="noreferrer">
             {link}
           </a>
         </p>
       )}
+
+      {showBoard && (
+        <GameBoardComponent
+          showField1={showField1}
+          showField2={showField2}
+          field1={field1}
+          field2={field2}
+        ></GameBoardComponent>
+      )}
+      {gameError && <GameErrorComponent message={gameError} />}
     </div>
   );
 };

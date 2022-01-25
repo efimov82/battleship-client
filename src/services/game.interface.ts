@@ -1,15 +1,19 @@
 import { Observable } from "rxjs";
-import { GameEvent } from "../classes/GameEvent";
-import { GameType } from "../types/game.enums";
+import { GameEvents } from "../classes/GameEvent";
+import { GameSettings } from "../types/game.types";
 
 export interface IGameService {
-  createGame(nickname: string, type: GameType, callback: Function): void;
+  createGame(
+    nickname: string,
+    settings: GameSettings,
+    callback: Function
+  ): void;
 
   joinGame(gameId: string, nickname: string, callback: Function): void;
 
-  addEvent(event: GameEvent): void;
+  addEvent(event: GameEvents): void;
 
   clearEvents(): void;
 
-  getEvents(): Observable<GameEvent>;
+  getEvents(): Observable<GameEvents>;
 }

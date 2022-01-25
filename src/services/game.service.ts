@@ -3,18 +3,24 @@
 import SocketIOClient, { io } from "socket.io-client";
 import { Observable, Subject } from "rxjs";
 
-import { GameType } from "../types/game.enums";
 import { IGameService } from "./game.interface";
-import { GameEvent, GameEventType } from "../classes/GameEvent";
-import { ACCESS_TOKEN, GAME_ID } from "../types/constants";
-//import { GameData, GameSettings } from "../types/game.types";
+import {
+  CheckInPayload,
+  CheckInGameEvent,
+  ConnectedGameEvent,
+  GameErrorEvent,
+  GameEvents,
+  PlayerConnectedEvent,
+} from "../classes/GameEvent";
+import { GameEventType } from "../types/game.enums";
+import { GameSettings } from "../types/game.types";
 
 export const WS_GAME_HOST = "ws://test";
 export class GameService implements IGameService {
   private isBrowser = typeof window !== "undefined";
   private socket: any; //Socket;
   private isConnected = false;
-  private subject = new Subject<GameEvent>();
+  private subject = new Subject<GameEvents>();
   private accessToken: string;
   private gameId: string;
 
@@ -30,7 +36,7 @@ export class GameService implements IGameService {
     this.accessToken = accessToken;
   }
 
-  public addEvent(event: GameEvent): void {
+  public addEvent(event: GameEvents): void {
     return this.subject.next(event);
   }
 
@@ -38,7 +44,7 @@ export class GameService implements IGameService {
     this.subject.next(null);
   }
 
-  public getEvents(): Observable<GameEvent> {
+  public getEvents(): Observable<GameEvents> {
     return this.subject.asObservable();
   }
 
@@ -53,52 +59,52 @@ export class GameService implements IGameService {
         this.isConnected = true;
         console.log("ws connected");
 
-        // auto register in game
-        if (this.accessToken && this.gameId) {
-          this.register(this.gameId, this.accessToken);
-        }
-
-        this.addEvent({
-          type: GameEventType.connected,
-        });
+        this.addEvent(new ConnectedGameEvent());
       });
 
-      this.socket.on("player2Joined", (data: string) => {
-        this.addEvent({
-          type: GameEventType.playerConnected,
-          payload: JSON.parse(data),
-        });
+      this.socket.on(GameEventType.playerConnected, (data: string) => {
+        this.addEvent(
+          new PlayerConnectedEvent({
+            payload: JSON.parse(data),
+          })
+        );
       });
     }
   }
 
   /**
-   * Register currect connected socketId in gameId by accessTocken
+   * Register connected socketId in gameId by accessTocken
    * @param gameId
    * @param accessToken
    */
-  public register(gameId: string | string[], accessToken: string): void {
-    console.log("register", gameId, accessToken);
+  public checkIn(gameId: string | string[], accessToken: string): void {
+    //console.log("checkIn", gameId, accessToken);
 
-    this.socket.emit("register", { gameId, accessToken }, (result) => {
-      this.addEvent({
-        type: GameEventType.checkIn,
-        payload: result,
-      });
-    });
+    this.socket.emit(
+      GameEventType.checkIn,
+      { gameId, accessToken },
+      (result: CheckInPayload) => {
+        console.log(result);
+        if (result.error) {
+          this.addEvent(new GameErrorEvent(result.error));
+        } else {
+          this.addEvent(new CheckInGameEvent(result));
+        }
+      }
+    );
   }
 
   public createGame(
     nickname: string,
-    type: GameType,
+    settings: GameSettings,
     callback: Function
     //settings?: GameSettings
   ): void {
     this.socket.emit(
-      "createGame",
+      GameEventType.createGame,
       {
         nickname,
-        type,
+        gameType: settings.gameType,
       },
       callback
     );
@@ -108,7 +114,7 @@ export class GameService implements IGameService {
     console.log("joinGame", gameId, nickname);
 
     this.socket.emit(
-      "joinGame",
+      GameEventType.joinGame,
       {
         gameId,
         nickname,
