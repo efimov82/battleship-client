@@ -1,5 +1,12 @@
+@mixin cell {
+  background-color: #292574;
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
 .cellWrapper {
-  border: 1px solid #292574;
+  //border: 1px solid #292574;
   // TODO add media for mobile
 
   box-shadow: 3px 3px 1px #ccc;
@@ -20,21 +27,89 @@
     background-image: url("/images/empty.png");
   }
 
-  &.ship1v {
-    background-color: #292574;
-    background-image: url("/images/ship-1v.png");
-    background-size: 100%;
-    background-repeat: no-repeat;
-    background-position: center;
+  &.shipX1_1 {
+    @include cell;
+    background-image: url("/images/ship-x1-1.png");
+  }
+  &.shipX1_v_1 {
+    @include cell;
+    background-image: url("/images/ship-x1-v-1.png");
   }
 
-  &.ship2v {
-    background-color: aliceblue;
-    background-image: url("/images/ship-2v.png");
+  &.shipX2_1 {
+    @include cell;
+    background-image: url("/images/ship-x2-1.png");
   }
-  &.ship3v {
-    background-color: aliceblue;
-    background-image: url("/images/ship-3v.png");
+  &.shipX2_2 {
+    @include cell;
+    background-image: url("/images/ship-x2-2.png");
+  }
+  &.shipX2_v_1 {
+    @include cell;
+    background-image: url("/images/ship-x2-v-1.png");
+  }
+  &.shipX2_v_2 {
+    @include cell;
+    background-image: url("/images/ship-x2-v-2.png");
+  }
+
+  &.shipX3_1 {
+    @include cell;
+    background-image: url("/images/ship-x3-1.png");
+  }
+  &.shipX3_2 {
+    @include cell;
+    background-image: url("/images/ship-x3-2.png");
+  }
+  &.shipX3_3 {
+    @include cell;
+    background-image: url("/images/ship-x3-3.png");
+  }
+  &.shipX3_v_1 {
+    @include cell;
+    background-image: url("/images/ship-x3-v-1.png");
+  }
+  &.shipX3_v_2 {
+    @include cell;
+    background-image: url("/images/ship-x3-v-2.png");
+  }
+  &.shipX3_v_3 {
+    @include cell;
+    background-image: url("/images/ship-x3-v-3.png");
+  }
+
+  &.shipX4_1 {
+    @include cell;
+    background-image: url("/images/ship-x3-1.png");
+  }
+  &.shipX4_2 {
+    @include cell;
+    background-image: url("/images/ship-x3-2.png");
+  }
+  &.shipX4_3 {
+    @include cell;
+    background-image: url("/images/ship-x3-2.png");
+  }
+  &.shipX4_4 {
+    @include cell;
+    background-image: url("/images/ship-x3-3.png");
+  }
+
+  &.shipX4_v_1 {
+    @include cell;
+    background-image: url("/images/ship-x3-v-1.png");
+  }
+  &.shipX4_v_2 {
+    @include cell;
+    background-image: url("/images/ship-x3-v-2.png");
+  }
+  &.shipX4_v_3 {
+    @include cell;
+    background-image: url("/images/ship-x3-v-2.png");
+  }
+  &.shipX4_v_4 {
+    @include cell;
+    background-image: url("/images/ship-x3-v-3.png");
   }
 
   &.close {

@@ -25,7 +25,7 @@ export class GameService implements IGameService {
   private isBrowser = typeof window !== "undefined";
   private socket: any; //Socket;
   private isConnected = false;
-  private subject = new ReplaySubject<GameEvents>(4);
+  private subject = new ReplaySubject<GameEvents>(10);
   private accessToken: string;
   private gameId: string;
 
