@@ -3,6 +3,9 @@
   background-size: 100%;
   background-repeat: no-repeat;
   background-position: center;
+  // todo apply for bum
+  cursor: url("/images/red-cross.png") 1 1, auto;
+  border: none;
 }
 
 .cellWrapper {
@@ -13,13 +16,10 @@
   -moz-box-shadow: 3px 3px 1px #ccc;
   -webkit-box-shadow: 3px 3px 1px #ccc;
   -khtml-box-shadow: 3px 3px 1px #ccc;
+  cursor: url("/images/weapon-sight-small.png") 1 1, auto;
 
-  &.marked {
-    background-color: cornflowerblue;
-    background-image: url("/images/flag.svg");
-    background-size: 60%;
-    background-repeat: no-repeat;
-    background-position: center;
+  &:hover {
+    border: 2px dotted #5e0101;
   }
 
   &.empty {
