@@ -1,26 +1,31 @@
 // import { inject, injectable } from "inversify";
 // import "reflect-metadata";
 import SocketIOClient, { io } from "socket.io-client";
-import { Observable, Subject } from "rxjs";
+import { Observable, ReplaySubject } from "rxjs";
 
 import { IGameService } from "./game.interface";
 import {
-  CheckInPayload,
   CheckInGameEvent,
   ConnectedGameEvent,
   GameErrorEvent,
   GameEvents,
   RivalConnectedEvent,
+  FieldsUpdateEvent,
 } from "../classes/GameEvent";
 import { GameEventType } from "../types/common/game.enums";
 import { GameSettings } from "../types/common/game.types";
+import {
+  CheckInPayload,
+  FieldsUpdatePayload,
+  RivalConnectedPayload,
+} from "../types/common/events.responces";
 
 export const WS_GAME_HOST = "ws://test";
 export class GameService implements IGameService {
   private isBrowser = typeof window !== "undefined";
   private socket: any; //Socket;
   private isConnected = false;
-  private subject = new Subject<GameEvents>();
+  private subject = new ReplaySubject<GameEvents>(4);
   private accessToken: string;
   private gameId: string;
 
@@ -62,13 +67,19 @@ export class GameService implements IGameService {
         this.addEvent(new ConnectedGameEvent());
       });
 
-      this.socket.on(GameEventType.rivalConnected, (data: string) => {
-        this.addEvent(
-          new RivalConnectedEvent({
-            payload: JSON.parse(data),
-          })
-        );
-      });
+      this.socket.on(
+        GameEventType.rivalConnected,
+        (data: RivalConnectedPayload) => {
+          this.addEvent(new RivalConnectedEvent(data));
+        }
+      );
+
+      this.socket.on(
+        GameEventType.fieldsUpdate,
+        (data: FieldsUpdatePayload) => {
+          this.addEvent(new FieldsUpdateEvent(data));
+        }
+      );
     }
   }
 
@@ -84,7 +95,6 @@ export class GameService implements IGameService {
       GameEventType.checkIn,
       { gameId, accessToken },
       (result: CheckInPayload) => {
-        console.log(result);
         if (result.error) {
           this.addEvent(new GameErrorEvent(result.error));
         } else {

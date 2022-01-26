@@ -15,21 +15,24 @@ function MyApp({ Component, pageProps }: AppProps) {
   const [soundMute, setSoundMute] = React.useState(false);
   const [gameData, setGameData] = React.useState({});
   const [gameService] = useService<GameService>(GameService);
+  // const { getItemFromStorage, setItemToStorage } = useStorage();
+  // let subscription: Subscription;
 
   useMount(() => {
     gameService.connect();
+
+    // const accessToken = getItemFromStorage(ACCESS_TOKEN);
+
+    // subscription = gameService.getEvents().subscribe((event: GameEvents) => {
+    //   switch (event.type) {
+    //     case GameEventType.connected:
+    //       gameService.checkIn(id, accessToken);
+    //       break;
+    //   }
+    // });
   });
 
   return (
-    // <Provider
-    //   container={() => {
-    //     const container = new Container();
-    //     container.bind<GameService>(GameService).toSelf();
-    //     //container.bind(TYPES.gameService).toSelf();
-    //     //container.bind(Bar).toSelf();
-    //     return container;
-    //   }}
-    // >
     <AppContext.Provider
       value={{
         state: {
@@ -45,7 +48,6 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Component {...pageProps} />
       <Footer />
     </AppContext.Provider>
-    // </Provider>
   );
 }
 

@@ -44,6 +44,7 @@ function GameNewPage(props: GameProps) {
       return;
     }
 
+    settings.gameType = state.type;
     gameService.createGame(state.name, settings, createGameCallback);
   };
 

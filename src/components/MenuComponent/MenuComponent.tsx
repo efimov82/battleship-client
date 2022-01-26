@@ -10,7 +10,9 @@ export function MenuComponent(props: {}) {
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
-        <Navbar.Brand href="#home">Battleship</Navbar.Brand>
+        <Link href="/" passHref>
+          <Navbar.Brand>Battleship</Navbar.Brand>
+        </Link>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">

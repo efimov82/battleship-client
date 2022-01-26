@@ -1,3 +1,8 @@
+import {
+  CheckInPayload,
+  FieldsUpdatePayload,
+  RivalConnectedPayload,
+} from "../types/common/events.responces";
 import { GameEventType } from "../types/common/game.enums";
 import { Cell } from "./Cell";
 
@@ -25,22 +30,20 @@ export class GameErrorEvent extends GameEvent<string> {
   type = GameEventType.error;
 }
 
-export type CheckInPayload = {
-  player: string;
-  field: Cell[][];
-  error?: string;
-};
-
 export class CheckInGameEvent extends GameEvent<CheckInPayload> {
   type = GameEventType.checkIn;
 }
 
-export class RivalConnectedEvent extends GameEvent<any> {
+export class RivalConnectedEvent extends GameEvent<RivalConnectedPayload> {
   type = GameEventType.rivalConnected;
+}
+export class FieldsUpdateEvent extends GameEvent<FieldsUpdatePayload> {
+  type = GameEventType.fieldsUpdate;
 }
 
 export type GameEvents =
   | ConnectedGameEvent
   | GameErrorEvent
   | CheckInGameEvent
-  | RivalConnectedEvent;
+  | RivalConnectedEvent
+  | FieldsUpdateEvent;

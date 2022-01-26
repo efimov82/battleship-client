@@ -14,8 +14,17 @@ export function CellComponent(props: CellComponentProps) {
       case CellTypeEnum.empty:
         res.push(styles.empty);
         break;
-      case CellTypeEnum.water:
-        res.push(styles.water);
+      case CellTypeEnum.shipX1:
+        res.push(styles.ship1v);
+        break;
+      case CellTypeEnum.shipX2:
+        res.push(styles.ship2v);
+        break;
+      case CellTypeEnum.shipX3:
+        res.push(styles.ship3v);
+        break;
+      case CellTypeEnum.shipX4:
+        res.push(styles.ship4v);
         break;
       default:
     }

@@ -1,5 +1,5 @@
 .cellWrapper {
-  border: 1px solid #3f3b81;
+  border: 1px solid #292574;
   // TODO add media for mobile
 
   box-shadow: 3px 3px 1px #ccc;
@@ -15,14 +15,26 @@
     background-position: center;
   }
 
-  &.number {
-    background-color: #f7f2eb;
-    font-size: 18px;
+  &.empty {
+    //background-color: aliceblue;
+    background-image: url("/images/empty.png");
   }
 
-  &.empty {
+  &.ship1v {
+    background-color: #292574;
+    background-image: url("/images/ship-1v.png");
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  &.ship2v {
     background-color: aliceblue;
-    background-image: url("/images/empty.png");
+    background-image: url("/images/ship-2v.png");
+  }
+  &.ship3v {
+    background-color: aliceblue;
+    background-image: url("/images/ship-3v.png");
   }
 
   &.close {

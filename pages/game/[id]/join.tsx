@@ -33,9 +33,10 @@ const GameJoinPage = () => {
   };
 
   const joinGameCallback = (response: any) => {
-    console.log("joinToGameCallback", response);
+    console.log("joinToGameCallback: ", response);
     if (response.gameId) {
       setItemToStorage(ACCESS_TOKEN, response.accessToken);
+      gameService.checkIn(id, response.accessToken);
       router.push(`/game/${response.gameId}`);
     }
   };

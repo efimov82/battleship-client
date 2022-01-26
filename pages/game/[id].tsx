@@ -8,6 +8,7 @@ import { Cell } from "../../src/classes/Cell";
 import { Field } from "../../src/classes/Field";
 import {
   CheckInGameEvent,
+  FieldsUpdateEvent,
   GameErrorEvent,
   GameEvents,
   RivalConnectedEvent,
@@ -40,6 +41,7 @@ const GamePage = ({ query }) => {
     const accessToken = getItemFromStorage(ACCESS_TOKEN);
 
     subscription = gameService.getEvents().subscribe((event: GameEvents) => {
+      if (!event) return;
       switch (event.type) {
         case GameEventType.connected:
           gameService.checkIn(id, accessToken);
@@ -48,9 +50,12 @@ const GamePage = ({ query }) => {
           checkInHandler(event as CheckInGameEvent);
           break;
         case GameEventType.rivalConnected:
-          playerConnectedHandler(event);
+          rivalConnectedHandler(event as RivalConnectedEvent);
           break;
-        case GameEventType.error:
+        case GameEventType.fieldsUpdate:
+          fieldsUpdate(event as FieldsUpdateEvent);
+          break;
+        case GameEventType.error: // TODO move to _app ??
           gameErrorHandler(event as GameErrorEvent);
           break;
         default:
@@ -61,16 +66,26 @@ const GamePage = ({ query }) => {
 
   const checkInHandler = (event: CheckInGameEvent) => {
     console.log(event);
-    setField1(event.getPayload().field);
     setShowBoard(true);
-    setShowField1(true);
   };
 
-  const playerConnectedHandler = (event: RivalConnectedEvent) => {
+  const rivalConnectedHandler = (event: RivalConnectedEvent) => {
+    setShowJoinLink(false);
+    // setShowBoard(true);
+    // setShowField1(true);
+    //setShowField2(true);
+  };
+
+  const fieldsUpdate = (event: FieldsUpdateEvent) => {
     console.log(event);
 
-    setShowJoinLink(false);
-    setShowField2(true);
+    setField1(event.getPayload().playerField);
+    setShowField1(true);
+    if (event.getPayload().rivalField) {
+      setField2(event.getPayload().rivalField);
+      setShowField2(true);
+      setShowJoinLink(false);
+    }
   };
 
   const gameErrorHandler = (event: GameErrorEvent) => {
@@ -79,6 +94,7 @@ const GamePage = ({ query }) => {
   };
 
   useUnmount(() => {
+    console.log("unmount");
     subscription?.unsubscribe();
   });
 
