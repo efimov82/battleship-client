@@ -9,11 +9,22 @@ export interface IGameService {
     callback: Function
   ): void;
 
+  connect(): void;
+  checkIn(gameId: string | string[], accessToken: string): void;
+
+  createGame(
+    nickname: string,
+    settings: GameSettings,
+    callback: Function
+    //settings?: GameSettings
+  ): void;
+
   joinGame(gameId: string, nickname: string, callback: Function): void;
+  autoFill(gameId: string | string[], accessToken: string): void;
 
-  addEvent(event: GameEvents): void;
+  // addEvent(event: GameEvents): void;
 
-  clearEvents(): void;
+  // clearEvents(): void;
 
   getEvents(): Observable<GameEvents>;
 }

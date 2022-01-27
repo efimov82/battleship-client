@@ -41,12 +41,16 @@ export class GameService implements IGameService {
     this.accessToken = accessToken;
   }
 
-  public addEvent(event: GameEvents): void {
-    return this.subject.next(event);
-  }
-
-  public clearEvents(): void {
-    this.subject.next(null);
+  public autoFill(): void {
+    this.socket.emit(
+      GameEventType.autoFill,
+      { gameId: this.gameId, accessToken: this.accessToken },
+      (result: CheckInPayload) => {
+        if (result.error) {
+          this.addEvent(new GameErrorEvent(result.error));
+        }
+      }
+    );
   }
 
   public getEvents(): Observable<GameEvents> {
@@ -98,6 +102,8 @@ export class GameService implements IGameService {
         if (result.error) {
           this.addEvent(new GameErrorEvent(result.error));
         } else {
+          this.gameId = gameId as string;
+          this.accessToken = accessToken;
           this.addEvent(new CheckInGameEvent(result));
         }
       }
@@ -131,5 +137,9 @@ export class GameService implements IGameService {
       },
       callback
     );
+  }
+
+  private addEvent(event: GameEvents): void {
+    return this.subject.next(event);
   }
 }

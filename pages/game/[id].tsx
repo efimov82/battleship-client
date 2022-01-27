@@ -110,7 +110,8 @@ const GamePage = ({ query }) => {
         </p>
       )}
 
-      {showBoard && (
+      {gameError && <GameErrorComponent message={gameError} />}
+      {!gameError && showBoard && (
         <GameBoardComponent
           showField1={showField1}
           showField2={showField2}
@@ -118,7 +119,6 @@ const GamePage = ({ query }) => {
           field2={field2}
         ></GameBoardComponent>
       )}
-      {gameError && <GameErrorComponent message={gameError} />}
     </div>
   );
 };

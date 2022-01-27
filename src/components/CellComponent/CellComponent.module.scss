@@ -3,9 +3,16 @@
   background-size: 100%;
   background-repeat: no-repeat;
   background-position: center;
-  // todo apply for bum
+  // todo apply for shots
   cursor: url("/images/red-cross.png") 1 1, auto;
   border: none;
+}
+
+.playerField {
+  cursor: url("/images/green-plus.png") 1 1, auto !important;
+  &:hover {
+    border: 1px dotted #3a7205 !important;
+  }
 }
 
 .cellWrapper {

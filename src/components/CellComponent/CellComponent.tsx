@@ -4,6 +4,7 @@ import styles from "./CellComponent.module.scss";
 type CellComponentProps = {
   cell: Cell;
   onCellClick: (row: number, col: number) => void;
+  className: string;
 };
 
 export function CellComponent(props: CellComponentProps) {
@@ -11,6 +12,8 @@ export function CellComponent(props: CellComponentProps) {
     const res = [styles.cellWrapper];
 
     res.push(styles[cell.type]);
+    res.push(styles[props.className]);
+
     return res;
   }
 
@@ -20,14 +23,16 @@ export function CellComponent(props: CellComponentProps) {
 
   // function cellonMouseEnter(e) {}
 
-  // function cellonMouseLeave(e) {}
+  function cellRightClick(e) {
+    e.preventDefault();
+  }
 
   return (
     <div
       onClick={() => props.onCellClick(props.cell.row, props.cell.col)}
       // onMouseEnter={cellonMouseEnter}
       // onMouseLeave={cellonMouseLeave}
-      //onContextMenu={cellRightClick}
+      onContextMenu={cellRightClick}
       key={props.cell.row}
       className={getCellClass(props.cell).join(" ")}
     ></div>
