@@ -8,13 +8,15 @@ import { Cell } from "../../src/classes/Cell";
 import { Field } from "../../src/classes/Field";
 import {
   CheckInGameEvent,
-  FieldsUpdateEvent,
   GameErrorEvent,
   GameEvents,
   GameUpdateEvent,
   RivalConnectedEvent,
 } from "../../src/classes/GameEvent";
-import { GameBoardComponent } from "../../src/components/GameBoardComponent/GameBoardComponent";
+import {
+  EditShipsMode,
+  GameBoardComponent,
+} from "../../src/components/GameBoardComponent/GameBoardComponent";
 import { GameErrorComponent } from "../../src/components/GameErrorComponent/GameErrorComponent";
 import { useService } from "../../src/di/injector";
 import useStorage from "../../src/hooks/useStorage";
@@ -40,9 +42,10 @@ const GamePage = ({ query }) => {
   const [shipsCount1, setShipCount1] = useState<ShipsCount>(null);
   const [shipsCount2, setShipCount2] = useState<ShipsCount>(null);
   let subscription: Subscription;
+  let accessToken: string = null;
 
   useMount(() => {
-    const accessToken = getItemFromStorage(ACCESS_TOKEN);
+    accessToken = getItemFromStorage(ACCESS_TOKEN);
 
     subscription = gameService.getEvents().subscribe((event: GameEvents) => {
       if (!event) return;
@@ -77,6 +80,7 @@ const GamePage = ({ query }) => {
   };
 
   const rivalConnectedHandler = (event: RivalConnectedEvent) => {
+    console.log(event);
     setShowJoinLink(false);
     // setShowBoard(true);
     // setShowField1(true);
@@ -115,6 +119,33 @@ const GamePage = ({ query }) => {
     gameService.autoFill();
   };
 
+  const handleOnStartButtonClick = () => {
+    gameService.startGame();
+  };
+
+  const handleOnPlayerFieldClick = (
+    row: number,
+    col: number,
+    editShipsData: EditShipsMode
+  ) => {
+    if (editShipsData.modeType === "add") {
+      const payload = {
+        row,
+        col,
+        shipSize: editShipsData.shipSize,
+        isVertical: editShipsData.isShipVertical,
+      };
+
+      gameService.addShip(payload);
+    } else if (editShipsData.modeType === "delete") {
+      gameService.deleteShip(row, col);
+    }
+  };
+
+  const handleOnRivalFieldClick = (row: number, col: number) => {
+    console.log(row, col);
+  };
+
   const gameErrorHandler = (event: GameErrorEvent) => {
     setShowJoinLink(false);
     setGameError(event.getPayload());
@@ -147,7 +178,13 @@ const GamePage = ({ query }) => {
           showField2={showField2}
           field1={field1}
           field2={field2}
+          rivalName="Rival name"
           onAutoFillClick={handleOnAutoFillClick}
+          onStartButtonClick={handleOnStartButtonClick}
+          onPlayerFieldClick={(row, col, editShipsMode) =>
+            handleOnPlayerFieldClick(row, col, editShipsMode)
+          }
+          onRivalFieldClick={(row, col) => handleOnRivalFieldClick(row, col)}
         ></GameBoardComponent>
       )}
     </div>

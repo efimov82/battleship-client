@@ -5,3 +5,11 @@
   grid-template-rows: repeat(10, 1fr);
   grid-template-columns: repeat(10, 1fr);
 }
+
+.active {
+  border: 3px solid rgb(61, 105, 226);
+}
+
+.waiting {
+  opacity: 0.65;
+}

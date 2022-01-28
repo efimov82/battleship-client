@@ -13,42 +13,47 @@ type GameBoardComponentProps = {
   showField2: boolean;
   field1: Cell[][];
   field2: Cell[][];
+  rivalName: string;
   onAutoFillClick: () => void;
+  onStartButtonClick: () => void;
+  onPlayerFieldClick: (
+    row: number,
+    col: number,
+    editShipsData: EditShipsMode
+  ) => void;
+  onRivalFieldClick: (row: number, col: number) => void;
 };
 
-type editShipsMode = {
+export type EditShipsMode = {
   modeType: "add" | "delete" | "";
   shipSize?: number;
   isShipVertical: boolean;
 };
 
 export function GameBoardComponent(props: GameBoardComponentProps) {
-  // const [editMode, setSelectedMode] = useState(null);
-  // const [selectedShipSize, setSelectedShipSize] = useState(null);
-  const [editShipsMode, setEditShipsMode] = useState<editShipsMode>({
+  const [editShipsMode, setEditShipsMode] = useState<EditShipsMode>({
     modeType: "",
     isShipVertical: false,
   });
 
-  const onPlayerFieldClick = (e) => {
-    console.log("x,y");
+  const handlePlayerFieldClick = (row: number, col: number) => {
+    if (props.editMode) {
+      props.onPlayerFieldClick(row, col, editShipsMode);
+    }
   };
-
-  const onRivalFieldClick = (e) => {};
-
   const handleSelectEditShipsMode = (
     modeType: "add" | "delete" | "",
-    shipSize?: number,
-    isVertical?: boolean
+    shipSize?: number
   ) => {
+    let isShipVertical = false;
     if (shipSize === editShipsMode.shipSize) {
-      shipSize = 0;
-      modeType = "";
+      isShipVertical = !editShipsMode.isShipVertical;
     }
+
     setEditShipsMode({
       modeType,
       shipSize,
-      isShipVertical: editShipsMode.isShipVertical,
+      isShipVertical,
     });
   };
 
@@ -56,12 +61,15 @@ export function GameBoardComponent(props: GameBoardComponentProps) {
     <div className="container">
       <div className={styles.gameBoard}>
         <div className="row">
+          <div>Nickname: {props.rivalName}</div>
           <EditShipsComponent
             shipSize={editShipsMode.shipSize}
             modeType={editShipsMode.modeType}
+            isVertical={editShipsMode.isShipVertical}
             shipsCount={props.shipsCount1}
             onSelectMode={handleSelectEditShipsMode}
             onAutoFillClick={props.onAutoFillClick}
+            onStartButtonClick={props.onStartButtonClick}
           />
         </div>
         <div className="row">
@@ -70,7 +78,7 @@ export function GameBoardComponent(props: GameBoardComponentProps) {
               <FieldComponent
                 className="playerField"
                 field={props.field1}
-                onCellClick={onPlayerFieldClick}
+                onCellClick={handlePlayerFieldClick}
               ></FieldComponent>
             )}
           </div>
@@ -80,7 +88,7 @@ export function GameBoardComponent(props: GameBoardComponentProps) {
               <FieldComponent
                 className="rivalField"
                 field={props.field2}
-                onCellClick={onRivalFieldClick}
+                onCellClick={props.onRivalFieldClick}
               ></FieldComponent>
             )}
           </div>

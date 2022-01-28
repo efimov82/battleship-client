@@ -2,6 +2,18 @@ import { Cell } from "../../classes/Cell";
 import { GameState } from "./game.enums";
 import { GameSettings, ShipsCount } from "./game.types";
 
+// Requests
+export type AddShipPayload = {
+  row: number;
+  col: number;
+  shipSize: number;
+  isVertical: boolean;
+};
+
+export type RemoveShipPayload = {
+  shipId: number;
+};
+
 // Responses
 export type CheckInPayload = {
   player: string;

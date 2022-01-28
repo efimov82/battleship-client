@@ -4,17 +4,20 @@
   background-repeat: no-repeat;
   background-position: center;
   // todo apply for shots
-  cursor: url("/images/red-cross.png") 1 1, auto;
-  border: none;
 
   // no - margin: 0.5px;
 }
 
 .playerField {
-  cursor: url("/images/green-plus.png") 1 1, auto !important;
+  cursor: url("/images/add-ship-cursor.png") 1 1, auto !important;
   &:hover {
     border: 1px dotted #3a7205 !important;
   }
+}
+
+.rivalField {
+  cursor: url("/images/red-cross.png") 1 1, auto;
+  border: none;
 }
 
 .cellWrapper {

@@ -10,12 +10,12 @@ import {
   GameErrorEvent,
   GameEvents,
   RivalConnectedEvent,
-  FieldsUpdateEvent,
   GameUpdateEvent,
 } from "../classes/GameEvent";
 import { GameEventType } from "../types/common/game.enums";
 import { GameSettings } from "../types/common/game.types";
 import {
+  AddShipPayload,
   CheckInPayload,
   FieldsUpdatePayload,
   GameUpdatePayload,
@@ -30,6 +30,7 @@ export class GameService implements IGameService {
   private subject = new ReplaySubject<GameEvents>(10);
   private accessToken: string;
   private gameId: string;
+  #gameData: GameUpdatePayload;
 
   constructor(private wsHost: string = WS_GAME_HOST) {
     console.log("Game service created: ", this.wsHost);
@@ -41,18 +42,6 @@ export class GameService implements IGameService {
 
   public setAccessToken(accessToken: string) {
     this.accessToken = accessToken;
-  }
-
-  public autoFill(): void {
-    this.socket.emit(
-      GameEventType.autoFill,
-      { gameId: this.gameId, accessToken: this.accessToken },
-      (result: CheckInPayload) => {
-        if (result.error) {
-          this.addEvent(new GameErrorEvent(result.error));
-        }
-      }
-    );
   }
 
   public getEvents(): Observable<GameEvents> {
@@ -80,14 +69,15 @@ export class GameService implements IGameService {
         }
       );
 
-      this.socket.on(
-        GameEventType.fieldsUpdate,
-        (data: FieldsUpdatePayload) => {
-          this.addEvent(new FieldsUpdateEvent(data));
-        }
-      );
+      // this.socket.on(
+      //   GameEventType.fieldsUpdate,
+      //   (data: FieldsUpdatePayload) => {
+      //     this.addEvent(new FieldsUpdateEvent(data));
+      //   }
+      // );
 
       this.socket.on(GameEventType.gameUpdate, (data: GameUpdatePayload) => {
+        this.#gameData = data;
         this.addEvent(new GameUpdateEvent(data));
       });
     }
@@ -120,7 +110,6 @@ export class GameService implements IGameService {
     nickname: string,
     settings: GameSettings,
     callback: Function
-    //settings?: GameSettings
   ): void {
     this.socket.emit(
       GameEventType.createGame,
@@ -143,6 +132,49 @@ export class GameService implements IGameService {
       },
       callback
     );
+  }
+
+  public autoFill(): void {
+    this.socket.emit(
+      GameEventType.autoFill,
+      { gameId: this.gameId, accessToken: this.accessToken },
+      (result: CheckInPayload) => {
+        if (result.error) {
+          this.addEvent(new GameErrorEvent(result.error));
+        }
+      }
+    );
+  }
+
+  public startGame(): boolean {
+    const shipsCount = this.#gameData.player.shipsCount;
+    if (
+      shipsCount.x1 === 0 &&
+      shipsCount.x2 === 0 &&
+      shipsCount.x3 === 0 &&
+      shipsCount.x4 === 0
+    ) {
+      this.socket.emit(GameEventType.playerReady);
+    }
+
+    return false;
+  }
+
+  public addShip(payload: AddShipPayload): void {
+    this.socket.emit(GameEventType.addShip, {
+      gameId: this.gameId,
+      accessToken: this.accessToken,
+      payload,
+    });
+  }
+
+  public deleteShip(row: number, col: number): void {
+    this.socket.emit(GameEventType.deleteShip, {
+      gameId: this.gameId,
+      accessToken: this.accessToken,
+      row,
+      col,
+    });
   }
 
   private addEvent(event: GameEvents): void {

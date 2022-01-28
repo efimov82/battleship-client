@@ -2,7 +2,7 @@ import React from "react";
 import { Cell } from "../../classes/Cell";
 import { Field } from "../../classes/Field";
 import { CellComponent } from "../CellComponent/CellComponent";
-import styles from "./FieldComponent.module.css";
+import styles from "./FieldComponent.module.scss";
 
 type FieldComponentProps = {
   className: string;
@@ -15,9 +15,9 @@ export function FieldComponent(props: FieldComponentProps) {
     e.preventDefault();
   };
 
-  const handleCellClick = (row, col) => {
-    console.log(row, col);
-  };
+  // const handleCellClick = (row, col) => {
+  //   console.log(row, col);
+  // };
 
   const fieldMap = props.field.map((row, rowIndex) => {
     const rowComponent = row.map((cell, colIndex) => {
@@ -25,7 +25,7 @@ export function FieldComponent(props: FieldComponentProps) {
         <CellComponent
           key={`${rowIndex}_${colIndex}`}
           cell={cell}
-          onCellClick={handleCellClick}
+          onCellClick={props.onCellClick}
           className={props.className}
         />
       );
