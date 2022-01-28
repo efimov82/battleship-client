@@ -44,9 +44,11 @@ function MyApp({ Component, pageProps }: AppProps) {
       }}
     >
       <PageHeaderComponent title="game-title" />
-      <MenuComponent />
-      <Component {...pageProps} />
-      <Footer />
+      <div className="game">
+        <MenuComponent />
+        <Component {...pageProps} />
+        <Footer />
+      </div>
     </AppContext.Provider>
   );
 }

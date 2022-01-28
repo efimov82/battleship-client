@@ -11,12 +11,14 @@ import {
   GameEvents,
   RivalConnectedEvent,
   FieldsUpdateEvent,
+  GameUpdateEvent,
 } from "../classes/GameEvent";
 import { GameEventType } from "../types/common/game.enums";
 import { GameSettings } from "../types/common/game.types";
 import {
   CheckInPayload,
   FieldsUpdatePayload,
+  GameUpdatePayload,
   RivalConnectedPayload,
 } from "../types/common/events.responces";
 
@@ -84,6 +86,10 @@ export class GameService implements IGameService {
           this.addEvent(new FieldsUpdateEvent(data));
         }
       );
+
+      this.socket.on(GameEventType.gameUpdate, (data: GameUpdatePayload) => {
+        this.addEvent(new GameUpdateEvent(data));
+      });
     }
   }
 

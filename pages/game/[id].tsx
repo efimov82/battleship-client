@@ -11,6 +11,7 @@ import {
   FieldsUpdateEvent,
   GameErrorEvent,
   GameEvents,
+  GameUpdateEvent,
   RivalConnectedEvent,
 } from "../../src/classes/GameEvent";
 import { GameBoardComponent } from "../../src/components/GameBoardComponent/GameBoardComponent";
@@ -19,7 +20,8 @@ import { useService } from "../../src/di/injector";
 import useStorage from "../../src/hooks/useStorage";
 import { GameService } from "../../src/services/game.service";
 import { ACCESS_TOKEN } from "../../src/types/constants";
-import { GameEventType } from "../../src/types/common/game.enums";
+import { GameEventType, GameType } from "../../src/types/common/game.enums";
+import { ShipsCount } from "../../src/types/common/game.types";
 
 // game/xxxx-xx-xxxx?player=2
 const GamePage = ({ query }) => {
@@ -28,13 +30,15 @@ const GamePage = ({ query }) => {
   const { id, player } = router.query;
 
   const { getItemFromStorage, setItemToStorage } = useStorage();
-  const [showJoinLink, setShowJoinLink] = useState(true);
+  const [showJoinLink, setShowJoinLink] = useState(false);
   const [gameError, setGameError] = useState("");
   const [showBoard, setShowBoard] = useState(false);
   const [showField1, setShowField1] = useState(false);
   const [showField2, setShowField2] = useState(false);
-  const [field1, setField1] = useState<Cell[][]>(null); // Field
+  const [field1, setField1] = useState<Cell[][]>(null);
   const [field2, setField2] = useState<Cell[][]>(null);
+  const [shipsCount1, setShipCount1] = useState<ShipsCount>(null);
+  const [shipsCount2, setShipCount2] = useState<ShipsCount>(null);
   let subscription: Subscription;
 
   useMount(() => {
@@ -52,8 +56,11 @@ const GamePage = ({ query }) => {
         case GameEventType.rivalConnected:
           rivalConnectedHandler(event as RivalConnectedEvent);
           break;
-        case GameEventType.fieldsUpdate:
-          fieldsUpdate(event as FieldsUpdateEvent);
+        // case GameEventType.fieldsUpdate: // TODO remove
+        //   fieldsUpdate(event as FieldsUpdateEvent);
+        //   break;
+        case GameEventType.gameUpdate:
+          gameUpdate(event as GameUpdateEvent);
           break;
         case GameEventType.error: // TODO move to _app ??
           gameErrorHandler(event as GameErrorEvent);
@@ -76,16 +83,36 @@ const GamePage = ({ query }) => {
     //setShowField2(true);
   };
 
-  const fieldsUpdate = (event: FieldsUpdateEvent) => {
+  // const fieldsUpdate = (event: FieldsUpdateEvent) => {
+  //   console.log(event);
+
+  //   setField1(event.getPayload().playerField);
+  //   setShowField1(true);
+  //   if (event.getPayload().rivalField) {
+  //     setField2(event.getPayload().rivalField);
+  //     setShowField2(true);
+  //     setShowJoinLink(false);
+  //   }
+  // };
+
+  const gameUpdate = (event: GameUpdateEvent) => {
     console.log(event);
 
-    setField1(event.getPayload().playerField);
+    const payload = event.getPayload();
+    setField1(payload.player.field);
+    setShipCount1(payload.player.shipsCount);
     setShowField1(true);
-    if (event.getPayload().rivalField) {
-      setField2(event.getPayload().rivalField);
+    if (payload.rival) {
+      setField2(payload.rival.field);
+      setShipCount2(payload.rival.shipsCount);
       setShowField2(true);
-      setShowJoinLink(false);
+    } else if (payload.settings.gameType === GameType.multyPlay) {
+      setShowJoinLink(true);
     }
+  };
+
+  const handleOnAutoFillClick = () => {
+    gameService.autoFill();
   };
 
   const gameErrorHandler = (event: GameErrorEvent) => {
@@ -100,7 +127,7 @@ const GamePage = ({ query }) => {
 
   const link = `${process.env.NEXT_PUBLIC_HOSTNAME}/game/${id}/join`;
   return (
-    <div className="container">
+    <div className="container gameContainer">
       {showJoinLink && (
         <p>
           Join link:{" "}
@@ -113,10 +140,14 @@ const GamePage = ({ query }) => {
       {gameError && <GameErrorComponent message={gameError} />}
       {!gameError && showBoard && (
         <GameBoardComponent
+          editMode={true}
+          shipsCount1={shipsCount1}
+          shipsCount2={shipsCount2}
           showField1={showField1}
           showField2={showField2}
           field1={field1}
           field2={field2}
+          onAutoFillClick={handleOnAutoFillClick}
         ></GameBoardComponent>
       )}
     </div>

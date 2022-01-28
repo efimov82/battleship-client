@@ -1,5 +1,6 @@
 import { Cell } from "../../classes/Cell";
 import { GameState } from "./game.enums";
+import { GameSettings, ShipsCount } from "./game.types";
 
 // Responses
 export type CheckInPayload = {
@@ -30,13 +31,19 @@ export type GameErrorPayload = {
 };
 
 export type GameUpdatePayload = {
+  state: GameState;
+  settings: GameSettings;
   player: {
     nickname: string;
     field: Cell[][];
+    shipsCount: ShipsCount;
+    isReady: boolean;
   };
   rival?: {
     nickname: string;
     field: Cell[][];
+    shipsCount: ShipsCount;
+    isReady: boolean;
   };
 };
 

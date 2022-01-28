@@ -10,12 +10,10 @@ const host = process.env.NEXT_PUBLIC_WS_GAME_HOST;
 
 export const injector: DependencyInjector = makeInjector([
   { provide: WS_GAME_HOST, useValue: host },
-  // { provide: ACCESS_TOKEN_VALUE, useValue: accessTokenValue },
-  // { provide: GAME_ID_VALUE, useValue: gameIdValue },
   {
     provide: GameService,
     useClass: GameService,
-    deps: [WS_GAME_HOST], // error ??? ACCESS_TOKEN_VALUE, GAME_ID_VALUE
+    deps: [WS_GAME_HOST],
   },
 ]);
 

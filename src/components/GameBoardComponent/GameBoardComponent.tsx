@@ -1,40 +1,67 @@
 import { useState } from "react";
 import { Cell } from "../../classes/Cell";
 import { FieldComponent } from "../FieldComponent/FieldComponent";
-import ShipPanelComponent from "../ShipsPanelComponent/ShipPanelComponent";
 import styles from "./GameBoardComponent.module.scss";
+import EditShipsComponent from "../EditShipsComponent/EditShipsComponent";
+import { ShipsCount } from "../../types/common/game.types";
 
 type GameBoardComponentProps = {
+  editMode: boolean;
+  shipsCount1: ShipsCount;
+  shipsCount2: ShipsCount;
   showField1: boolean;
   showField2: boolean;
-  field1: Cell[][]; //Field;
+  field1: Cell[][];
   field2: Cell[][];
+  onAutoFillClick: () => void;
+};
+
+type editShipsMode = {
+  modeType: "add" | "delete" | "";
+  shipSize?: number;
+  isShipVertical: boolean;
 };
 
 export function GameBoardComponent(props: GameBoardComponentProps) {
-  const [selectedMode, setSelectedMode] = useState(null);
-  const [selectedShipSize, setSelectedShipSize] = useState(null);
+  // const [editMode, setSelectedMode] = useState(null);
+  // const [selectedShipSize, setSelectedShipSize] = useState(null);
+  const [editShipsMode, setEditShipsMode] = useState<editShipsMode>({
+    modeType: "",
+    isShipVertical: false,
+  });
 
-  const onClickField = (e) => {
+  const onPlayerFieldClick = (e) => {
     console.log("x,y");
   };
 
-  const handleSelectMode = (mode: string, shipSize: number = 0) => {
-    setSelectedMode(mode);
-    setSelectedShipSize(shipSize);
+  const onRivalFieldClick = (e) => {};
 
-    console.log(mode, shipSize);
+  const handleSelectEditShipsMode = (
+    modeType: "add" | "delete" | "",
+    shipSize?: number,
+    isVertical?: boolean
+  ) => {
+    if (shipSize === editShipsMode.shipSize) {
+      shipSize = 0;
+      modeType = "";
+    }
+    setEditShipsMode({
+      modeType,
+      shipSize,
+      isShipVertical: editShipsMode.isShipVertical,
+    });
   };
-
-  const handleonAutoFillClick = () => {};
 
   return (
     <div className="container">
       <div className={styles.gameBoard}>
         <div className="row">
-          <ShipPanelComponent
-            onSelectMode={handleSelectMode}
-            onAutoFillClick={handleonAutoFillClick}
+          <EditShipsComponent
+            shipSize={editShipsMode.shipSize}
+            modeType={editShipsMode.modeType}
+            shipsCount={props.shipsCount1}
+            onSelectMode={handleSelectEditShipsMode}
+            onAutoFillClick={props.onAutoFillClick}
           />
         </div>
         <div className="row">
@@ -43,7 +70,7 @@ export function GameBoardComponent(props: GameBoardComponentProps) {
               <FieldComponent
                 className="playerField"
                 field={props.field1}
-                onCellClick={onClickField}
+                onCellClick={onPlayerFieldClick}
               ></FieldComponent>
             )}
           </div>
@@ -53,7 +80,7 @@ export function GameBoardComponent(props: GameBoardComponentProps) {
               <FieldComponent
                 className="rivalField"
                 field={props.field2}
-                onCellClick={onClickField}
+                onCellClick={onRivalFieldClick}
               ></FieldComponent>
             )}
           </div>

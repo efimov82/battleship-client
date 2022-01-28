@@ -12,9 +12,12 @@ export enum GameEventType {
   autoFill = "autoFill",
   rivalConnected = "rivalConnected",
   fieldsUpdate = "fieldsUpdate",
+  gameUpdate = "gameUpdate",
   error = "error",
 }
 
 export enum GameState {
   created = "created",
+  started = "started",
+  finished = "finished",
 }
