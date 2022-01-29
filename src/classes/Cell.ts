@@ -23,10 +23,16 @@ export enum CellTypeEnum {
   shipX4_v_4 = "shipX4_v_4",
 }
 
+export enum CellState {
+  hitted = "hitted",
+  killed = "killed",
+}
+
 export type Cell = {
   row: number;
   col: number;
   type: CellTypeEnum;
+  state: CellState;
 };
 // export class Cell {
 //   shipId: number;

@@ -11,6 +11,7 @@ import {
   GameEvents,
   RivalConnectedEvent,
   GameUpdateEvent,
+  GameStartedEvent,
 } from "../classes/GameEvent";
 import { GameEventType } from "../types/common/game.enums";
 import { GameSettings } from "../types/common/game.types";
@@ -20,6 +21,7 @@ import {
   FieldsUpdatePayload,
   GameUpdatePayload,
   RivalConnectedPayload,
+  ShotUpdatePayload,
 } from "../types/common/events.responces";
 
 export const WS_GAME_HOST = "ws://test";
@@ -69,6 +71,10 @@ export class GameService implements IGameService {
         }
       );
 
+      this.socket.on(GameEventType.gameStarted, () => {
+        this.addEvent(new GameStartedEvent());
+      });
+
       // this.socket.on(
       //   GameEventType.fieldsUpdate,
       //   (data: FieldsUpdatePayload) => {
@@ -79,6 +85,10 @@ export class GameService implements IGameService {
       this.socket.on(GameEventType.gameUpdate, (data: GameUpdatePayload) => {
         this.#gameData = data;
         this.addEvent(new GameUpdateEvent(data));
+      });
+
+      this.socket.on(GameEventType.shotUpdate, (data: ShotUpdatePayload) => {
+        console.log(data);
       });
     }
   }
@@ -154,7 +164,11 @@ export class GameService implements IGameService {
       shipsCount.x3 === 0 &&
       shipsCount.x4 === 0
     ) {
-      this.socket.emit(GameEventType.playerReady);
+      this.socket.emit(GameEventType.playerReady, {
+        gameId: this.gameId,
+        accessToken: this.accessToken,
+      });
+      return true;
     }
 
     return false;
@@ -170,6 +184,15 @@ export class GameService implements IGameService {
 
   public deleteShip(row: number, col: number): void {
     this.socket.emit(GameEventType.deleteShip, {
+      gameId: this.gameId,
+      accessToken: this.accessToken,
+      row,
+      col,
+    });
+  }
+
+  public takeShot(row: number, col: number): void {
+    this.socket.emit(GameEventType.takeShot, {
       gameId: this.gameId,
       accessToken: this.accessToken,
       row,

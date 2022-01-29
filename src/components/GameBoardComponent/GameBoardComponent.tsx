@@ -7,6 +7,7 @@ import { ShipsCount } from "../../types/common/game.types";
 
 type GameBoardComponentProps = {
   editMode: boolean;
+  isShootingAvailable: boolean;
   shipsCount1: ShipsCount;
   shipsCount2: ShipsCount;
   showField1: boolean;
@@ -62,21 +63,23 @@ export function GameBoardComponent(props: GameBoardComponentProps) {
       <div className={styles.gameBoard}>
         <div className="row">
           <div>Nickname: {props.rivalName}</div>
-          <EditShipsComponent
-            shipSize={editShipsMode.shipSize}
-            modeType={editShipsMode.modeType}
-            isVertical={editShipsMode.isShipVertical}
-            shipsCount={props.shipsCount1}
-            onSelectMode={handleSelectEditShipsMode}
-            onAutoFillClick={props.onAutoFillClick}
-            onStartButtonClick={props.onStartButtonClick}
-          />
+          {props.editMode && (
+            <EditShipsComponent
+              shipSize={editShipsMode.shipSize}
+              modeType={editShipsMode.modeType}
+              isVertical={editShipsMode.isShipVertical}
+              shipsCount={props.shipsCount1}
+              onSelectMode={handleSelectEditShipsMode}
+              onAutoFillClick={props.onAutoFillClick}
+              onStartButtonClick={props.onStartButtonClick}
+            />
+          )}
         </div>
         <div className="row">
           <div className="col m-1">
             {props.showField1 && (
               <FieldComponent
-                className="playerField"
+                className={props.editMode ? "playerFieldEdit" : "playerField"}
                 field={props.field1}
                 onCellClick={handlePlayerFieldClick}
               ></FieldComponent>
@@ -86,7 +89,11 @@ export function GameBoardComponent(props: GameBoardComponentProps) {
           <div className="col m-1">
             {props.showField2 && (
               <FieldComponent
-                className="rivalField"
+                className={
+                  props.isShootingAvailable
+                    ? "rivalFieldShootingAvailable"
+                    : "rivalField"
+                }
                 field={props.field2}
                 onCellClick={props.onRivalFieldClick}
               ></FieldComponent>

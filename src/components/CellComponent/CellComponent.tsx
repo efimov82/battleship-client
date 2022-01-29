@@ -1,4 +1,4 @@
-import { Cell, CellTypeEnum } from "../../classes/Cell";
+import { Cell, CellState, CellTypeEnum } from "../../classes/Cell";
 import styles from "./CellComponent.module.scss";
 
 type CellComponentProps = {
@@ -8,20 +8,27 @@ type CellComponentProps = {
 };
 
 export function CellComponent(props: CellComponentProps) {
-  function getCellClass(cell: Cell): string[] {
+  const getCellClass = (): string[] => {
     const res = [styles.cellWrapper];
-
-    res.push(styles[cell.type]);
+    let name = props.cell.type.toString();
+    if (props.cell.state === CellState.killed) {
+      name += "_killed";
+    }
+    res.push(styles[name]);
     res.push(styles[props.className]);
 
     return res;
-  }
+  };
 
-  // function cellLeftClick() {
-  //   onCellClick(cell.getRow(), cell.getCol());
-  // }
-
-  // function cellonMouseEnter(e) {}
+  const getContentClass = () => {
+    if (props.cell.state === CellState.hitted) {
+      if (props.cell.type === CellTypeEnum.empty) {
+        return styles.emptyHitted;
+      } else {
+        return styles.shipHitted;
+      }
+    }
+  };
 
   function cellRightClick(e) {
     e.preventDefault();
@@ -34,7 +41,9 @@ export function CellComponent(props: CellComponentProps) {
       // onMouseLeave={cellonMouseLeave}
       onContextMenu={cellRightClick}
       key={props.cell.row}
-      className={getCellClass(props.cell).join(" ")}
-    ></div>
+      className={getCellClass().join(" ")}
+    >
+      <div className={getContentClass()}></div>
+    </div>
   );
 }

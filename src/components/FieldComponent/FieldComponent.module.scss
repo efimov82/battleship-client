@@ -6,8 +6,9 @@
   grid-template-columns: repeat(10, 1fr);
 }
 
-.active {
-  border: 3px solid rgb(61, 105, 226);
+.rivalFieldShootingAvailable {
+  //border: 1px solid #507fff;
+  background-color: #4875b9b8;
 }
 
 .waiting {

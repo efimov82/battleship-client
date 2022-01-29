@@ -9,6 +9,13 @@
 }
 
 .playerField {
+  cursor: auto !important;
+  &:hover {
+    border: none !important;
+  }
+}
+
+.playerFieldEdit {
   cursor: url("/images/add-ship-cursor.png") 1 1, auto !important;
   &:hover {
     border: 1px dotted #3a7205 !important;
@@ -16,6 +23,11 @@
 }
 
 .rivalField {
+  cursor: auto;
+  border: none;
+}
+
+.rivalFieldShootingAvailable {
   cursor: url("/images/red-cross.png") 1 1, auto;
   border: none;
 }
@@ -43,106 +55,225 @@
     background-image: url("/images/empty.png");
   }
 
+  .emptyHitted {
+    background-size: 70%;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    // z-index: 100;
+    background-image: url("/images/hit.png");
+  }
+
+  .shipHitted {
+    background-size: 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    background-image: url("/images/hitted.png");
+  }
+
   &.shipX1_1 {
     @include cell;
     margin: 0.5px;
     background-image: url("/images/ship-x1-1.png");
+
+    &_killed {
+      @include cell;
+      margin: 0.5px;
+      background-image: url("/images/ship-x1-1-killed.png");
+    }
   }
   &.shipX1_v_1 {
     @include cell;
     margin: 0.5px;
     background-image: url("/images/ship-x1-v-1.png");
+    &_killed {
+      @include cell;
+      margin: 0.5px;
+      background-image: url("/images/ship-x1-v-1-killed.png");
+    }
   }
 
   &.shipX2_1 {
     @include cell;
     margin: 0.5px 0 0.5px 0.5px;
     background-image: url("/images/ship-x2-1.png");
+    &_killed {
+      @include cell;
+      margin: 0.5px 0 0.5px 0.5px;
+      background-image: url("/images/ship-x2-1-killed.png");
+    }
   }
   &.shipX2_2 {
     @include cell;
     margin: 0.5px 0.5px 0.5px 0;
     background-image: url("/images/ship-x2-2.png");
+    &_killed {
+      @include cell;
+      margin: 0.5px 0.5px 0.5px 0;
+      background-image: url("/images/ship-x2-2-killed.png");
+    }
   }
   &.shipX2_v_1 {
     @include cell;
     margin: 0.5px 0.5px 0 0.5px;
     background-image: url("/images/ship-x2-v-1.png");
+    &_killed {
+      @include cell;
+      margin: 0.5px 0.5px 0 0.5px;
+      background-image: url("/images/ship-x2-v-1-killed.png");
+    }
   }
   &.shipX2_v_2 {
     @include cell;
     margin: 0 0.5px 0.5px 0.5px;
     background-image: url("/images/ship-x2-v-2.png");
+    &_killed {
+      @include cell;
+      margin: 0 0.5px 0.5px 0.5px;
+      background-image: url("/images/ship-x2-v-2-killed.png");
+    }
   }
 
   &.shipX3_1 {
     @include cell;
     margin: 0.5px 0 0.5px 0.5px;
     background-image: url("/images/ship-x3-1.png");
+    &_killed {
+      @include cell;
+      margin: 0.5px 0 0.5px 0.5px;
+      background-image: url("/images/ship-x3-1-killed.png");
+    }
   }
   &.shipX3_2 {
     @include cell;
     margin: 0.5px 0 0.5px 0;
     background-image: url("/images/ship-x3-2.png");
+    &_killed {
+      @include cell;
+      margin: 0.5px 0 0.5px 0;
+      background-image: url("/images/ship-x3-2-killed.png");
+    }
   }
   &.shipX3_3 {
     @include cell;
     margin: 0.5px 0.5px 0.5px 0;
     background-image: url("/images/ship-x3-3.png");
+    &_killed {
+      @include cell;
+      margin: 0.5px 0.5px 0.5px 0;
+      background-image: url("/images/ship-x3-3-killed.png");
+    }
   }
   &.shipX3_v_1 {
     @include cell;
     margin: 0.5px 0.5px 0 0.5px;
     background-image: url("/images/ship-x3-v-1.png");
+    &_killed {
+      @include cell;
+      margin: 0.5px 0.5px 0 0.5px;
+      background-image: url("/images/ship-x3-v-1-killed.png");
+    }
   }
   &.shipX3_v_2 {
     @include cell;
-
     margin: 0 0.5px;
     background-image: url("/images/ship-x3-v-2.png");
+    &_killed {
+      @include cell;
+      margin: 0 0.5px;
+      background-image: url("/images/ship-x3-v-2-killed.png");
+    }
   }
   &.shipX3_v_3 {
     @include cell;
     margin: 0 0.5px 1px 0.5px;
     background-image: url("/images/ship-x3-v-3.png");
+    &_killed {
+      @include cell;
+      margin: 0 0.5px 1px 0.5px;
+      background-image: url("/images/ship-x3-v-3-killed.png");
+    }
   }
 
   &.shipX4_1 {
     @include cell;
+    margin: 0 0.5px 0 0.5px;
     background-image: url("/images/ship-x4-1.png");
+    &_killed {
+      @include cell;
+      margin: 0 0.5px 0 0.5px;
+      background-image: url("/images/ship-x4-1-killed.png");
+    }
   }
   &.shipX4_2 {
     @include cell;
     background-image: url("/images/ship-x4-2.png");
+    &_killed {
+      @include cell;
+      background-image: url("/images/ship-x4-2-killed.png");
+    }
   }
   &.shipX4_3 {
     @include cell;
     background-image: url("/images/ship-x4-3.png");
+    &_killed {
+      @include cell;
+      background-image: url("/images/ship-x4-3-killed.png");
+    }
   }
   &.shipX4_4 {
     @include cell;
+    margin: 0.5px 1px 0.5px 0;
     background-image: url("/images/ship-x4-4.png");
+    &_killed {
+      @include cell;
+      margin: 0.5px 1px 0.5px 0;
+      background-image: url("/images/ship-x4-4-killed.png");
+    }
   }
 
   &.shipX4_v_1 {
     @include cell;
     margin: 0.5px 0.5px 0 0.5px;
     background-image: url("/images/ship-x4-v-1.png");
+    &_killed {
+      @include cell;
+      margin: 0.5px 0.5px 0 0.5px;
+      background-image: url("/images/ship-x4-v-1-killed.png");
+    }
   }
   &.shipX4_v_2 {
     @include cell;
     margin: 0 0.5px 0 0.5px;
     background-image: url("/images/ship-x4-v-2.png");
+    &_killed {
+      @include cell;
+      margin: 0 0.5px 0 0.5px;
+      background-image: url("/images/ship-x4-v-2-killed.png");
+    }
   }
   &.shipX4_v_3 {
     @include cell;
     margin: 0 0.5px 0 0.5px;
     background-image: url("/images/ship-x4-v-3.png");
+    &_killed {
+      @include cell;
+      margin: 0 0.5px 0 0.5px;
+      background-image: url("/images/ship-x4-v-3-killed.png");
+    }
   }
   &.shipX4_v_4 {
     @include cell;
     margin: 0 0.5px 0.5px 0.5px;
     background-image: url("/images/ship-x4-v-4.png");
+    &_killed {
+      @include cell;
+      margin: 0 0.5px 0.5px 0.5px;
+      background-image: url("/images/ship-x4-v-4-killed.png");
+    }
   }
 
   &.close {

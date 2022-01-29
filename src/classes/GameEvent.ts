@@ -41,9 +41,19 @@ export class GameUpdateEvent extends GameEvent<GameUpdatePayload> {
   type = GameEventType.gameUpdate;
 }
 
+export class GameStartedEvent extends GameEvent<null> {
+  type = GameEventType.gameStarted;
+}
+
+export class ShotUpdateEvent extends GameEvent<null> {
+  type = GameEventType.shotUpdate;
+}
+
 export type GameEvents =
   | ConnectedGameEvent
   | GameErrorEvent
   | CheckInGameEvent
   | RivalConnectedEvent
-  | GameUpdateEvent;
+  | GameUpdateEvent
+  | GameStartedEvent
+  | ShotUpdateEvent;

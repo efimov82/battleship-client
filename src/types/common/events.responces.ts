@@ -57,6 +57,18 @@ export type GameUpdatePayload = {
     shipsCount: ShipsCount;
     isReady: boolean;
   };
+  isPlayerTurn: boolean;
+};
+
+export type ShotUpdatePayload = {
+  player?: {
+    field: Cell[][];
+  };
+  rival?: {
+    field: Cell[][];
+  };
+  isPlayerTurn: boolean;
+  state: GameState;
 };
 
 export type FieldsUpdatePayload = {
