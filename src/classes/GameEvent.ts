@@ -2,6 +2,7 @@ import {
   CheckInPayload,
   GameUpdatePayload,
   RivalConnectedPayload,
+  ShotUpdatePayload,
 } from "../types/common/events.responces";
 import { GameEventType } from "../types/common/game.enums";
 
@@ -45,7 +46,7 @@ export class GameStartedEvent extends GameEvent<null> {
   type = GameEventType.gameStarted;
 }
 
-export class ShotUpdateEvent extends GameEvent<null> {
+export class ShotUpdateEvent extends GameEvent<ShotUpdatePayload> {
   type = GameEventType.shotUpdate;
 }
 

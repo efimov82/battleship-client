@@ -12,6 +12,7 @@ import {
   RivalConnectedEvent,
   GameUpdateEvent,
   GameStartedEvent,
+  ShotUpdateEvent,
 } from "../classes/GameEvent";
 import { GameEventType } from "../types/common/game.enums";
 import { GameSettings } from "../types/common/game.types";
@@ -88,7 +89,7 @@ export class GameService implements IGameService {
       });
 
       this.socket.on(GameEventType.shotUpdate, (data: ShotUpdatePayload) => {
-        console.log(data);
+        this.addEvent(new ShotUpdateEvent(data));
       });
     }
   }

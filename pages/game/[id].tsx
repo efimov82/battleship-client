@@ -10,8 +10,10 @@ import {
   CheckInGameEvent,
   GameErrorEvent,
   GameEvents,
+  GameStartedEvent,
   GameUpdateEvent,
   RivalConnectedEvent,
+  ShotUpdateEvent,
 } from "../../src/classes/GameEvent";
 import {
   EditShipsMode,
@@ -22,8 +24,13 @@ import { useService } from "../../src/di/injector";
 import useStorage from "../../src/hooks/useStorage";
 import { GameService } from "../../src/services/game.service";
 import { ACCESS_TOKEN } from "../../src/types/constants";
-import { GameEventType, GameType } from "../../src/types/common/game.enums";
+import {
+  GameEventType,
+  GameState,
+  GameType,
+} from "../../src/types/common/game.enums";
 import { ShipsCount } from "../../src/types/common/game.types";
+import { NotificationComponent } from "../../src/components/NotificationComponent/NotificationComponent";
 
 // game/xxxx-xx-xxxx?player=2
 const GamePage = ({ query }) => {
@@ -41,6 +48,11 @@ const GamePage = ({ query }) => {
   const [field2, setField2] = useState<Cell[][]>(null);
   const [shipsCount1, setShipCount1] = useState<ShipsCount>(null);
   const [shipsCount2, setShipCount2] = useState<ShipsCount>(null);
+  const [gameEditMode, setGameEditMode] = useState(true);
+  const [showNotificationGameStarted, setShowNotificationGameStarted] =
+    useState(false);
+  const [isShootingAvailable, setIsShootingAvailable] = useState(false);
+
   let subscription: Subscription;
   let accessToken: string = null;
 
@@ -59,11 +71,17 @@ const GamePage = ({ query }) => {
         case GameEventType.rivalConnected:
           rivalConnectedHandler(event as RivalConnectedEvent);
           break;
+        case GameEventType.gameStarted:
+          gameStartedHandler(event as GameStartedEvent);
+          break;
         // case GameEventType.fieldsUpdate: // TODO remove
         //   fieldsUpdate(event as FieldsUpdateEvent);
         //   break;
         case GameEventType.gameUpdate:
           gameUpdate(event as GameUpdateEvent);
+          break;
+        case GameEventType.shotUpdate:
+          shotUpdate(event as ShotUpdateEvent);
           break;
         case GameEventType.error: // TODO move to _app ??
           gameErrorHandler(event as GameErrorEvent);
@@ -82,30 +100,33 @@ const GamePage = ({ query }) => {
   const rivalConnectedHandler = (event: RivalConnectedEvent) => {
     console.log(event);
     setShowJoinLink(false);
-    // setShowBoard(true);
-    // setShowField1(true);
-    //setShowField2(true);
   };
 
-  // const fieldsUpdate = (event: FieldsUpdateEvent) => {
-  //   console.log(event);
+  const gameStartedHandler = (event: GameStartedEvent) => {
+    setGameEditMode(false);
+    setShowNotificationGameStarted(true);
+    console.log("show game started");
+  };
 
-  //   setField1(event.getPayload().playerField);
-  //   setShowField1(true);
-  //   if (event.getPayload().rivalField) {
-  //     setField2(event.getPayload().rivalField);
-  //     setShowField2(true);
-  //     setShowJoinLink(false);
-  //   }
-  // };
+  const shotUpdate = (event: ShotUpdateEvent) => {
+    const payload = event.getPayload();
+    if (payload.player?.field) {
+      console.log(payload);
+    }
+  };
 
   const gameUpdate = (event: GameUpdateEvent) => {
     console.log(event);
 
     const payload = event.getPayload();
+    if (payload.state !== GameState.created) {
+      setGameEditMode(false);
+    }
+
     setField1(payload.player.field);
     setShipCount1(payload.player.shipsCount);
     setShowField1(true);
+    setIsShootingAvailable(payload.isPlayerTurn);
     if (payload.rival) {
       setField2(payload.rival.field);
       setShipCount2(payload.rival.shipsCount);
@@ -143,7 +164,7 @@ const GamePage = ({ query }) => {
   };
 
   const handleOnRivalFieldClick = (row: number, col: number) => {
-    console.log(row, col);
+    gameService.takeShot(row, col);
   };
 
   const gameErrorHandler = (event: GameErrorEvent) => {
@@ -167,11 +188,12 @@ const GamePage = ({ query }) => {
           </a>
         </p>
       )}
+      {showNotificationGameStarted && <NotificationComponent />}
 
       {gameError && <GameErrorComponent message={gameError} />}
       {!gameError && showBoard && (
         <GameBoardComponent
-          editMode={true}
+          editMode={gameEditMode}
           shipsCount1={shipsCount1}
           shipsCount2={shipsCount2}
           showField1={showField1}
@@ -179,6 +201,7 @@ const GamePage = ({ query }) => {
           field1={field1}
           field2={field2}
           rivalName="Rival name"
+          isShootingAvailable={isShootingAvailable}
           onAutoFillClick={handleOnAutoFillClick}
           onStartButtonClick={handleOnStartButtonClick}
           onPlayerFieldClick={(row, col, editShipsMode) =>

@@ -1,11 +1,7 @@
 @mixin cell {
-  //background-color: #292574;
   background-size: 104%;
   background-repeat: no-repeat;
   background-position: center;
-  // todo apply for shots
-
-  // no - margin: 0.5px;
 }
 
 .playerField {
@@ -33,13 +29,8 @@
 }
 
 .cellWrapper {
-  //border: 1px solid #292574;
   // TODO add media for mobile
 
-  // box-shadow: 3px 3px 1px #ccc;
-  // -moz-box-shadow: 3px 3px 1px #ccc;
-  // -webkit-box-shadow: 3px 3px 1px #ccc;
-  // -khtml-box-shadow: 3px 3px 1px #ccc;
   cursor: url("/images/weapon-sight-small.png") 1 1, auto;
   justify-content: center;
 
@@ -149,7 +140,7 @@
   }
   &.shipX3_2 {
     @include cell;
-    margin: 0.5px 0 0.5px 0;
+    margin: 0.5px 0;
     background-image: url("/images/ship-x3-2.png");
     &_killed {
       @include cell;
@@ -200,27 +191,31 @@
 
   &.shipX4_1 {
     @include cell;
-    margin: 0 0.5px 0 0.5px;
+    margin: 0.5px 0 0.5px 0.5px;
     background-image: url("/images/ship-x4-1.png");
     &_killed {
       @include cell;
-      margin: 0 0.5px 0 0.5px;
+      margin: 0.5px 0 0.5px 0.5px;
       background-image: url("/images/ship-x4-1-killed.png");
     }
   }
   &.shipX4_2 {
     @include cell;
+    margin: 0.5px 0;
     background-image: url("/images/ship-x4-2.png");
     &_killed {
       @include cell;
+      margin: 0.5px 0;
       background-image: url("/images/ship-x4-2-killed.png");
     }
   }
   &.shipX4_3 {
     @include cell;
+    margin: 0.5px 0;
     background-image: url("/images/ship-x4-3.png");
     &_killed {
       @include cell;
+      margin: 0.5px 0;
       background-image: url("/images/ship-x4-3-killed.png");
     }
   }
@@ -247,21 +242,21 @@
   }
   &.shipX4_v_2 {
     @include cell;
-    margin: 0 0.5px 0 0.5px;
+    margin: 0 0.5px;
     background-image: url("/images/ship-x4-v-2.png");
     &_killed {
       @include cell;
-      margin: 0 0.5px 0 0.5px;
+      margin: 0 0.5px;
       background-image: url("/images/ship-x4-v-2-killed.png");
     }
   }
   &.shipX4_v_3 {
     @include cell;
-    margin: 0 0.5px 0 0.5px;
+    margin: 0 0.5px;
     background-image: url("/images/ship-x4-v-3.png");
     &_killed {
       @include cell;
-      margin: 0 0.5px 0 0.5px;
+      margin: 0 0.5px;
       background-image: url("/images/ship-x4-v-3-killed.png");
     }
   }
