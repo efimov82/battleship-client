@@ -15,6 +15,7 @@ type GameBoardComponentProps = {
   field1: Cell[][];
   field2: Cell[][];
   rivalName: string;
+
   onAutoFillClick: () => void;
   onStartButtonClick: () => void;
   onPlayerFieldClick: (

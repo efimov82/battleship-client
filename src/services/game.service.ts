@@ -19,11 +19,11 @@ import { GameSettings } from "../types/common/game.types";
 import {
   AddShipPayload,
   CheckInPayload,
-  FieldsUpdatePayload,
   GameUpdatePayload,
   RivalConnectedPayload,
   ShotUpdatePayload,
 } from "../types/common/events.responces";
+import { Cell } from "../classes/Cell";
 
 export const WS_GAME_HOST = "ws://test";
 export class GameService implements IGameService {
@@ -33,6 +33,7 @@ export class GameService implements IGameService {
   private subject = new ReplaySubject<GameEvents>(10);
   private accessToken: string;
   private gameId: string;
+  private animatedCell: Cell = null;
   #gameData: GameUpdatePayload;
 
   constructor(private wsHost: string = WS_GAME_HOST) {
@@ -49,6 +50,14 @@ export class GameService implements IGameService {
 
   public getEvents(): Observable<GameEvents> {
     return this.subject.asObservable();
+  }
+
+  public setAnimatedCell(cell: Cell) {
+    this.animatedCell = cell;
+  }
+
+  public getAnimatedCell(): Cell {
+    return this.animatedCell;
   }
 
   public connect(): void {
@@ -76,13 +85,6 @@ export class GameService implements IGameService {
         this.addEvent(new GameStartedEvent());
       });
 
-      // this.socket.on(
-      //   GameEventType.fieldsUpdate,
-      //   (data: FieldsUpdatePayload) => {
-      //     this.addEvent(new FieldsUpdateEvent(data));
-      //   }
-      // );
-
       this.socket.on(GameEventType.gameUpdate, (data: GameUpdatePayload) => {
         this.#gameData = data;
         this.addEvent(new GameUpdateEvent(data));
@@ -99,18 +101,18 @@ export class GameService implements IGameService {
    * @param gameId
    * @param accessToken
    */
-  public checkIn(gameId: string | string[], accessToken: string): void {
-    //console.log("checkIn", gameId, accessToken);
+  public checkIn(gameId: string | string[]): void {
+    console.log("checkIn", gameId);
 
     this.socket.emit(
       GameEventType.checkIn,
-      { gameId, accessToken },
+      { gameId, accessToken: this.accessToken },
       (result: CheckInPayload) => {
         if (result.error) {
           this.addEvent(new GameErrorEvent(result.error));
         } else {
           this.gameId = gameId as string;
-          this.accessToken = accessToken;
+          this.accessToken = this.accessToken;
           this.addEvent(new CheckInGameEvent(result));
         }
       }

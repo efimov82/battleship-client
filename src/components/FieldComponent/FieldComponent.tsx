@@ -7,9 +7,14 @@ type FieldComponentProps = {
   className: string;
   onCellClick: (row: number, col: number) => void;
   field: Cell[][];
+  // animatedCell?: Cell;
 };
 
 export function FieldComponent(props: FieldComponentProps) {
+  const getClassName = () => {
+    return styles.field + " " + styles[props.className];
+  };
+
   const fieldMap = props.field.map((row, rowIndex) => {
     const rowComponent = row.map((cell, colIndex) => {
       return (
@@ -24,10 +29,6 @@ export function FieldComponent(props: FieldComponentProps) {
 
     return rowComponent;
   });
-
-  const getClassName = () => {
-    return styles.field + " " + styles[props.className];
-  };
 
   return <div className={getClassName()}>{fieldMap}</div>;
 }

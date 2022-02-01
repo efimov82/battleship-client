@@ -50,6 +50,15 @@ function EditShipsComponent(props: EditShipsComponentProps) {
     );
   };
 
+  const showStartButton = () => {
+    return (
+      props.shipsCount.x1 === 0 &&
+      props.shipsCount.x2 === 0 &&
+      props.shipsCount.x3 === 0 &&
+      props.shipsCount.x4 === 0
+    );
+  };
+
   return (
     <>
       <div className="d-flex">
@@ -71,12 +80,14 @@ function EditShipsComponent(props: EditShipsComponentProps) {
             }
             onClick={() => props.onSelectMode("delete")}
           />
-          <div
-            className="btn btn-primary ml-2"
-            onClick={props.onStartButtonClick}
-          >
-            Start battle!
-          </div>
+          {showStartButton() && (
+            <div
+              className="btn btn-primary ml-2"
+              onClick={props.onStartButtonClick}
+            >
+              Start battle!
+            </div>
+          )}
         </div>
       </div>
     </>

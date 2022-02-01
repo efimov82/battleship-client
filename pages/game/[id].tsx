@@ -1,11 +1,10 @@
 // import { withTranslation } from "next-i18next";
 // import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import { useMount, useUnmount } from "react-use";
 import { Subscription } from "rxjs";
 import { Cell } from "../../src/classes/Cell";
-import { Field } from "../../src/classes/Field";
 import {
   CheckInGameEvent,
   GameErrorEvent,
@@ -31,12 +30,14 @@ import {
 } from "../../src/types/common/game.enums";
 import { ShipsCount } from "../../src/types/common/game.types";
 import { NotificationComponent } from "../../src/components/NotificationComponent/NotificationComponent";
+import GameOverComponent from "../../src/components/GameOverComponent/GameOverComponent";
+import { GameUpdatePayload } from "../../src/types/common/events.responces";
 
-// game/xxxx-xx-xxxx?player=2
+// game/xxxx-xx-xxxx
 const GamePage = ({ query }) => {
   const router = useRouter();
   const [gameService] = useService<GameService>(GameService);
-  const { id, player } = router.query;
+  const { id } = router.query;
 
   const { getItemFromStorage, setItemToStorage } = useStorage();
   const [showJoinLink, setShowJoinLink] = useState(false);
@@ -52,18 +53,23 @@ const GamePage = ({ query }) => {
   const [showNotificationGameStarted, setShowNotificationGameStarted] =
     useState(false);
   const [isShootingAvailable, setIsShootingAvailable] = useState(false);
+  const [showGameOver, setShowGameOver] = useState(false);
+  const [isPlayerWin, setIsPlayerWin] = useState(false);
 
   let subscription: Subscription;
   let accessToken: string = null;
+  // let animatedCell: Cell = null;
 
   useMount(() => {
     accessToken = getItemFromStorage(ACCESS_TOKEN);
+    gameService.setAccessToken(accessToken);
+    gameService.setGameId(id as string);
 
     subscription = gameService.getEvents().subscribe((event: GameEvents) => {
       if (!event) return;
       switch (event.type) {
         case GameEventType.connected:
-          gameService.checkIn(id, accessToken);
+          gameService.checkIn(id);
           break;
         case GameEventType.checkIn:
           checkInHandler(event as CheckInGameEvent);
@@ -74,15 +80,12 @@ const GamePage = ({ query }) => {
         case GameEventType.gameStarted:
           gameStartedHandler(event as GameStartedEvent);
           break;
-        // case GameEventType.fieldsUpdate: // TODO remove
-        //   fieldsUpdate(event as FieldsUpdateEvent);
-        //   break;
         case GameEventType.gameUpdate:
           gameUpdate(event as GameUpdateEvent);
           break;
-        case GameEventType.shotUpdate:
-          shotUpdate(event as ShotUpdateEvent);
-          break;
+        // case GameEventType.shotUpdate:
+        //   shotUpdate(event as ShotUpdateEvent);
+        //   break;
         case GameEventType.error: // TODO move to _app ??
           gameErrorHandler(event as GameErrorEvent);
           break;
@@ -90,37 +93,56 @@ const GamePage = ({ query }) => {
           console.log("unkown event:", event);
       }
     });
+
+    // setAnimatedCell(gameService.getAnimatedCell());
   });
 
   const checkInHandler = (event: CheckInGameEvent) => {
-    console.log(event);
+    //console.log(event);
     setShowBoard(true);
   };
 
   const rivalConnectedHandler = (event: RivalConnectedEvent) => {
-    console.log(event);
+    //console.log(event);
     setShowJoinLink(false);
   };
 
   const gameStartedHandler = (event: GameStartedEvent) => {
     setGameEditMode(false);
     setShowNotificationGameStarted(true);
-    console.log("show game started");
+    //console.log("show game started");
   };
 
-  const shotUpdate = (event: ShotUpdateEvent) => {
-    const payload = event.getPayload();
-    if (payload.player?.field) {
-      console.log(payload);
-    }
-  };
+  // const shotUpdate = (event: ShotUpdateEvent) => {
+  //   const payload = event.getPayload();
+  //   if (payload.player?.field) {
+  //     const shottedCell = payload.player.field[0];
+
+  //     // gameService.setAnimatedCell(shottedCell);
+  //     // setAnimatedCell(shottedCell);
+  //   }
+  // };
 
   const gameUpdate = (event: GameUpdateEvent) => {
     console.log(event);
 
     const payload = event.getPayload();
-    if (payload.state !== GameState.created) {
-      setGameEditMode(false);
+    // if (payload.state !== GameState.created) {
+    //   setGameEditMode(false);
+    // }
+
+    switch (payload.state) {
+      case GameState.created:
+        setGameEditMode(true);
+        break;
+      case GameState.started:
+        setGameEditMode(false);
+        break;
+      case GameState.finished:
+        gameOver(payload);
+        break;
+      default:
+        console.log("Unkown game state ", payload.state);
     }
 
     setField1(payload.player.field);
@@ -134,6 +156,11 @@ const GamePage = ({ query }) => {
     } else if (payload.settings.gameType === GameType.multyPlay) {
       setShowJoinLink(true);
     }
+  };
+
+  const gameOver = (payload: GameUpdatePayload): void => {
+    setShowGameOver(true);
+    setIsPlayerWin(payload.isPlayerWin);
   };
 
   const handleOnAutoFillClick = () => {
@@ -191,6 +218,12 @@ const GamePage = ({ query }) => {
       {showNotificationGameStarted && <NotificationComponent />}
 
       {gameError && <GameErrorComponent message={gameError} />}
+      {showGameOver && (
+        <GameOverComponent
+          onNewGameClick={() => {}}
+          isPlayerWin={isPlayerWin}
+        />
+      )}
       {!gameError && showBoard && (
         <GameBoardComponent
           editMode={gameEditMode}

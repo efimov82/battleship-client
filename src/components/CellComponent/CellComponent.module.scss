@@ -28,6 +28,21 @@
   border: none;
 }
 
+.animated {
+  animation-duration: 4s;
+  animation-name: rivalShot;
+}
+
+@keyframes rivalShot {
+  from {
+    background-color: #e72b09e7;
+  }
+
+  to {
+    background-color: transparent;
+  }
+}
+
 .cellWrapper {
   // TODO add media for mobile
 
@@ -57,7 +72,7 @@
   }
 
   .shipHitted {
-    background-size: 80%;
+    background-size: 100%;
     background-repeat: no-repeat;
     background-position: center;
     width: 100%;

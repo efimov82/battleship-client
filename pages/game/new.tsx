@@ -44,6 +44,9 @@ function GameNewPage(props: GameProps) {
       return;
     }
 
+    setItemToStorage(ACCESS_TOKEN, "");
+    gameService.setAccessToken("");
+    gameService.setGameId(null);
     settings.gameType = state.type;
     gameService.createGame(state.name, settings, createGameCallback);
   };
@@ -52,8 +55,6 @@ function GameNewPage(props: GameProps) {
 
   // TODO types
   const createGameCallback = (response: any) => {
-    // const data = JSON.parse(response);
-    console.log("callback createGame", response);
     if (response.gameId) {
       setItemToStorage(ACCESS_TOKEN, response.accessToken);
       gameService.setAccessToken(response.accessToken);
@@ -100,11 +101,6 @@ function GameNewPage(props: GameProps) {
             <option value="multyPlay">Multy play</option>
           </select>
         </div>
-
-        {/* <div className="row">
-          <FieldComponent rows={10} cols={10} onCellClick={handleFieldClick} />
-        </div> */}
-
         <div className="row">
           <div className="col">
             <input

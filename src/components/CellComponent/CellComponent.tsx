@@ -15,7 +15,7 @@ export function CellComponent(props: CellComponentProps) {
       name += "_killed";
     }
     res.push(styles[name]);
-    res.push(styles[props.className]);
+    // res.push(styles.animated);
 
     return res;
   };
@@ -23,9 +23,9 @@ export function CellComponent(props: CellComponentProps) {
   const getContentClass = () => {
     if (props.cell.state === CellState.hitted) {
       if (props.cell.type === CellTypeEnum.empty) {
-        return styles.emptyHitted;
+        return styles.emptyHitted + " " + styles.animated;
       } else {
-        return styles.shipHitted;
+        return styles.shipHitted + " " + styles.animated;
       }
     }
   };
