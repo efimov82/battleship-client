@@ -63,7 +63,6 @@ export function GameBoardComponent(props: GameBoardComponentProps) {
     <div className="container">
       <div className={styles.gameBoard}>
         <div className="row">
-          <div>Nickname: {props.rivalName}</div>
           {props.editMode && (
             <EditShipsComponent
               shipSize={editShipsMode.shipSize}

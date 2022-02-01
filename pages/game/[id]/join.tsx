@@ -18,25 +18,15 @@ const GameJoinPage = () => {
 
   const { setItemToStorage } = useStorage();
 
-  const handleChangeName = (event: ChangeEvent<HTMLInputElement>) => {
-    const newState = { ...state, name: event.target.value };
-    setState(newState);
-  };
-
   const handleSubmit = (event: any) => {
     event.preventDefault();
-    if (!state.name) {
-      return;
-    }
 
     gameService.joinGame(id.toString(), state.name, joinGameCallback);
   };
 
   const joinGameCallback = (response: any) => {
-    console.log("joinToGameCallback: ", response);
     if (response.gameId) {
       setItemToStorage(ACCESS_TOKEN, response.accessToken);
-      gameService.checkIn(id, response.accessToken);
       router.push(`/game/${response.gameId}`);
     }
   };
@@ -45,20 +35,6 @@ const GameJoinPage = () => {
     <div className="container">
       <h1>Join game</h1>
       <form className="form" onSubmit={handleSubmit}>
-        <div className="row mb-3">
-          <label htmlFor="name" className="form-label">
-            Name
-          </label>
-          <input
-            id="name"
-            type="text"
-            className="form-control"
-            value={state.name}
-            onChange={handleChangeName}
-            placeholder="Name"
-          />
-        </div>
-
         <div className="row">
           <div className="col">
             <input

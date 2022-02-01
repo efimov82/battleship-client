@@ -1,6 +1,7 @@
 import Image from "next/image";
-import { ReactNode } from "react";
 import { BsXCircleFill } from "react-icons/bs";
+import { useService } from "../../di/injector";
+import { Sound, SoundService } from "../../services";
 import { ShipsCount } from "../../types/common/game.types";
 import styles from "./EditShipsComponent.module.scss";
 
@@ -15,8 +16,15 @@ type EditShipsComponentProps = {
 };
 
 function EditShipsComponent(props: EditShipsComponentProps) {
+  const [soundService] = useService<SoundService>(SoundService);
+
   const getClassName = (shipSize: number): string => {
     return props.shipSize === shipSize ? styles.selectedButton : "";
+  };
+
+  const onImageClick = (modeType: string, shipSize?: number) => {
+    props.onSelectMode(modeType, shipSize);
+    soundService.play(Sound.singleClick);
   };
 
   const getImage = (shipSize: number, width: number) => {
@@ -27,7 +35,7 @@ function EditShipsComponent(props: EditShipsComponentProps) {
     const alt = `x${shipSize}`;
     return (
       <Image
-        onClick={() => props.onSelectMode("add", shipSize)}
+        onClick={() => onImageClick("add", shipSize)}
         src={src}
         alt={alt}
         width={width}

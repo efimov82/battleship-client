@@ -10,6 +10,7 @@ export function MenuComponent(props: {}) {
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
         <a className={styles.brand} href="/">
           <Navbar.Brand>Battleship</Navbar.Brand>
         </a>

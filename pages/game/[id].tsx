@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { useMount, useUnmount } from "react-use";
 import { Subscription } from "rxjs";
-import { Cell } from "../../src/classes/Cell";
+import { Cell, CellState, CellTypeEnum } from "../../src/classes/Cell";
 import {
   CheckInGameEvent,
   GameErrorEvent,
@@ -14,14 +14,11 @@ import {
   RivalConnectedEvent,
   ShotUpdateEvent,
 } from "../../src/classes/GameEvent";
-import {
-  EditShipsMode,
-  GameBoardComponent,
-} from "../../src/components/GameBoardComponent/GameBoardComponent";
-import { GameErrorComponent } from "../../src/components/GameErrorComponent/GameErrorComponent";
+
 import { useService } from "../../src/di/injector";
 import useStorage from "../../src/hooks/useStorage";
-import { GameService } from "../../src/services/game.service";
+import { GameService, Sound, SoundService } from "../../src/services";
+
 import { ACCESS_TOKEN } from "../../src/types/constants";
 import {
   GameEventType,
@@ -29,14 +26,21 @@ import {
   GameType,
 } from "../../src/types/common/game.enums";
 import { ShipsCount } from "../../src/types/common/game.types";
+import { GameUpdatePayload } from "../../src/types/common/events.responces";
+
+import {
+  EditShipsMode,
+  GameBoardComponent,
+} from "../../src/components/GameBoardComponent/GameBoardComponent";
+import { GameErrorComponent } from "../../src/components/GameErrorComponent/GameErrorComponent";
 import { NotificationComponent } from "../../src/components/NotificationComponent/NotificationComponent";
 import GameOverComponent from "../../src/components/GameOverComponent/GameOverComponent";
-import { GameUpdatePayload } from "../../src/types/common/events.responces";
 
 // game/xxxx-xx-xxxx
 const GamePage = ({ query }) => {
   const router = useRouter();
   const [gameService] = useService<GameService>(GameService);
+  const [soundService] = useService<SoundService>(SoundService);
   const { id } = router.query;
 
   const { getItemFromStorage, setItemToStorage } = useStorage();
@@ -83,9 +87,9 @@ const GamePage = ({ query }) => {
         case GameEventType.gameUpdate:
           gameUpdate(event as GameUpdateEvent);
           break;
-        // case GameEventType.shotUpdate:
-        //   shotUpdate(event as ShotUpdateEvent);
-        //   break;
+        case GameEventType.shotUpdate:
+          shotUpdate(event as ShotUpdateEvent);
+          break;
         case GameEventType.error: // TODO move to _app ??
           gameErrorHandler(event as GameErrorEvent);
           break;
@@ -108,23 +112,34 @@ const GamePage = ({ query }) => {
     setShowNotificationGameStarted(true);
   };
 
-  // const shotUpdate = (event: ShotUpdateEvent) => {
-  //   const payload = event.getPayload();
-  //   if (payload.player?.field) {
-  //     const shottedCell = payload.player.field[0];
+  const shotUpdate = (event: ShotUpdateEvent) => {
+    const payload = event.getPayload();
+    if (payload.player?.field) {
+      const shottedCell = payload.player.field[0];
 
-  //     // gameService.setAnimatedCell(shottedCell);
-  //     // setAnimatedCell(shottedCell);
-  //   }
-  // };
+      playSoundOnShotUpdate(shottedCell);
+    } else if (payload.rival?.field) {
+      const shottedCell = payload.rival.field[0];
+
+      playSoundOnShotUpdate(shottedCell);
+    }
+  };
+
+  const playSoundOnShotUpdate = (cell: Cell) => {
+    if (cell.type === CellTypeEnum.empty) {
+      soundService.play(Sound.shotWater);
+    } else {
+      if (cell.state === CellState.killed) {
+        soundService.play(Sound.shipKilled);
+      } else {
+        soundService.play(Sound.shot);
+      }
+    }
+  };
 
   const gameUpdate = (event: GameUpdateEvent) => {
     console.log(event);
-
     const payload = event.getPayload();
-    // if (payload.state !== GameState.created) {
-    //   setGameEditMode(false);
-    // }
 
     switch (payload.state) {
       case GameState.created:
@@ -156,6 +171,12 @@ const GamePage = ({ query }) => {
   const gameOver = (payload: GameUpdatePayload): void => {
     setShowGameOver(true);
     setIsPlayerWin(payload.isPlayerWin);
+
+    if (payload.isPlayerWin) {
+      soundService.play(Sound.playerWin);
+    } else {
+      soundService.play(Sound.playerLose);
+    }
   };
 
   const handleOnAutoFillClick = () => {
@@ -179,9 +200,21 @@ const GamePage = ({ query }) => {
         isVertical: editShipsData.isShipVertical,
       };
 
-      gameService.addShip(payload);
+      gameService.addShip(payload, addShipCallback);
     } else if (editShipsData.modeType === "delete") {
-      gameService.deleteShip(row, col);
+      gameService.deleteShip(row, col, deleteShipCallback);
+    }
+  };
+
+  const addShipCallback = (result: boolean) => {
+    if (result) {
+      soundService.play(Sound.addShip);
+    }
+  };
+
+  const deleteShipCallback = (result: boolean) => {
+    if (result) {
+      soundService.play(Sound.deleteShip);
     }
   };
 

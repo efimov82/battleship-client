@@ -1,22 +1,21 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, FormEventHandler, useState } from "react";
 import { useRouter } from "next/router";
 import { useMount } from "react-use";
 import { withTranslation, WithTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 import { GameService } from "../../src/services/game.service";
-import { FieldComponent } from "../../src/components/FieldComponent/FieldComponent";
 
 import { useService } from "../../src/di/injector";
 import { GameSettings } from "../../src/types/common/game.types";
 import { GameType } from "../../src/types/common/game.enums";
 import useStorage from "../../src/hooks/useStorage";
 import { ACCESS_TOKEN } from "../../src/types/constants";
+import { CreateGamePayload } from "../../src/types/common/events.responces";
 
 interface GameProps extends WithTranslation {
   settings: GameSettings;
 }
-type GameState = {};
 
 function GameNewPage(props: GameProps) {
   const settings: GameSettings = {
@@ -29,32 +28,31 @@ function GameNewPage(props: GameProps) {
       x3: 2,
       x4: 1,
     },
+    speed: "medium",
   };
   const router = useRouter();
   const [gameService] = useService<GameService>(GameService);
 
   const [state, setState] = useState({
-    name: "",
     type: GameType.singlePlay,
+    speed: "medium",
   });
+  const [showGameSpeed, setShowGameSpeed] = useState(true);
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
-    if (!state.name) {
-      return;
-    }
 
     setItemToStorage(ACCESS_TOKEN, "");
     gameService.setAccessToken("");
     gameService.setGameId(null);
     settings.gameType = state.type;
-    gameService.createGame(state.name, settings, createGameCallback);
+    settings.speed = state.speed;
+    gameService.createGame(settings, createGameCallback);
   };
 
   const { setItemToStorage } = useStorage();
 
-  // TODO types
-  const createGameCallback = (response: any) => {
+  const createGameCallback = (response: CreateGamePayload) => {
     if (response.gameId) {
       setItemToStorage(ACCESS_TOKEN, response.accessToken);
       gameService.setAccessToken(response.accessToken);
@@ -64,14 +62,19 @@ function GameNewPage(props: GameProps) {
     }
   };
 
-  const handleChangeName = (event: ChangeEvent<HTMLInputElement>) => {
-    const newState = { ...state, name: event.target.value };
+  const handleChangeType = (event: ChangeEvent<HTMLSelectElement>) => {
+    const val = event.target.value;
+
+    setShowGameSpeed(val === "singlePlay");
+
+    const newState = { ...state, type: GameType[val] };
     setState(newState);
   };
 
-  const handleChangeType = (event: ChangeEvent<HTMLSelectElement>) => {
+  const handleChangeGameSpeed = (event: ChangeEvent<HTMLSelectElement>) => {
     const val = event.target.value;
-    const newState = { ...state, type: GameType[val] };
+    const newState = { ...state, speed: val };
+
     setState(newState);
   };
 
@@ -80,27 +83,30 @@ function GameNewPage(props: GameProps) {
       <h1>Create new game</h1>
       <form className="form" onSubmit={handleSubmit}>
         <div className="row mb-3">
-          <label htmlFor="name" className="form-label">
-            Name
-          </label>
-          <input
-            id="name"
-            type="text"
-            className="form-control"
-            value={state.name}
-            onChange={handleChangeName}
-            placeholder="Name"
-          />
-        </div>
-        <div className="row mb-3">
           <label htmlFor="type" className="form-label">
             Type
           </label>
           <select id="type" className="form-select" onChange={handleChangeType}>
-            <option value="singlePlay">Single play</option>
-            <option value="multyPlay">Multy play</option>
+            <option value="singlePlay">Single player</option>
+            <option value="multyPlay">Multiplayer</option>
           </select>
         </div>
+        {showGameSpeed && (
+          <div className="row mb-3">
+            <label htmlFor="gameSpeed" className="form-label">
+              Game speed
+            </label>
+            <select
+              id="gameSpeed"
+              className="form-select"
+              onChange={handleChangeGameSpeed}
+            >
+              <option value="slow">Slow</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+        )}
         <div className="row">
           <div className="col">
             <input

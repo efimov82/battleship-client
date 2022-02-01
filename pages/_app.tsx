@@ -9,27 +9,31 @@ import { Footer } from "../src/components/FooterComponent/FooterComponent";
 import { MenuComponent } from "../src/components/MenuComponent/MenuComponent";
 import PageHeaderComponent from "../src/components/PageHeaderComponent/PageHeaderComponent";
 import { useService } from "../src/di/injector";
+import { SoundService } from "../src/services";
 import { GameService } from "../src/services/game.service";
 import "../styles/globals.scss";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const [soundMute, setSoundMute] = React.useState(false);
-  const [gameData, setGameData] = React.useState({});
+  const [soundMuted, setSoundMuted] = React.useState(false);
   const [gameService] = useService<GameService>(GameService);
+  const [soundService] = useService<SoundService>(SoundService);
 
   useMount(() => {
     gameService.connect();
   });
 
+  const setSoundMute = (value: boolean) => {
+    setSoundMuted(value);
+    soundService.setSoundMuted(value);
+  };
+
   return (
     <AppContext.Provider
       value={{
         state: {
-          soundMute,
-          gameData,
+          soundMuted,
         },
         setSoundMute,
-        setGameData,
       }}
     >
       <PageHeaderComponent title="game-title" />

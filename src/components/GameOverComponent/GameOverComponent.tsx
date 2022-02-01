@@ -22,11 +22,11 @@ export default function GameOverComponent(props: GameOverComponentProps) {
             ? "Congratulations! You won!"
             : "Sorry, you're lose... Let's play again?"}
         </Modal.Body>
-        <Modal.Footer>
+        {/* <Modal.Footer>
           <Button variant="primary" onClick={props.onNewGameClick}>
             Play again
           </Button>
-        </Modal.Footer>
+        </Modal.Footer> */}
       </Modal>
     </>
   );

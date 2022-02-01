@@ -5,9 +5,9 @@ import styles from "./SoundSwitcherComponent.module.scss";
 
 export function SoundSwitcherComponent() {
   const context = useContext(AppContext);
-  let { soundMute } = context.state;
+  let { soundMuted } = context.state;
 
-  return soundMute ? (
+  return soundMuted ? (
     <BsFillVolumeMuteFill
       className={styles.soundIcon}
       onClick={() => context.setSoundMute(false)}

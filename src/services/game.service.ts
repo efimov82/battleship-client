@@ -119,16 +119,12 @@ export class GameService implements IGameService {
     );
   }
 
-  public createGame(
-    nickname: string,
-    settings: GameSettings,
-    callback: Function
-  ): void {
+  public createGame(settings: GameSettings, callback: Function): void {
     this.socket.emit(
       GameEventType.createGame,
       {
-        nickname,
         gameType: settings.gameType,
+        speed: settings.speed,
       },
       callback
     );
@@ -177,21 +173,36 @@ export class GameService implements IGameService {
     return false;
   }
 
-  public addShip(payload: AddShipPayload): void {
-    this.socket.emit(GameEventType.addShip, {
-      gameId: this.gameId,
-      accessToken: this.accessToken,
-      payload,
-    });
+  public addShip(
+    payload: AddShipPayload,
+    callback: (result: boolean) => void
+  ): void {
+    this.socket.emit(
+      GameEventType.addShip,
+      {
+        gameId: this.gameId,
+        accessToken: this.accessToken,
+        payload,
+      },
+      callback
+    );
   }
 
-  public deleteShip(row: number, col: number): void {
-    this.socket.emit(GameEventType.deleteShip, {
-      gameId: this.gameId,
-      accessToken: this.accessToken,
-      row,
-      col,
-    });
+  public deleteShip(
+    row: number,
+    col: number,
+    callback: (result: boolean) => void
+  ): void {
+    this.socket.emit(
+      GameEventType.deleteShip,
+      {
+        gameId: this.gameId,
+        accessToken: this.accessToken,
+        row,
+        col,
+      },
+      callback
+    );
   }
 
   public takeShot(row: number, col: number): void {
