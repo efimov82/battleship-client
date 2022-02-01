@@ -15,7 +15,6 @@ export function CellComponent(props: CellComponentProps) {
       name += "_killed";
     }
     res.push(styles[name]);
-    // res.push(styles.animated);
 
     return res;
   };

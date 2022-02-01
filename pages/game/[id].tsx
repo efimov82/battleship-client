@@ -93,24 +93,19 @@ const GamePage = ({ query }) => {
           console.log("unkown event:", event);
       }
     });
-
-    // setAnimatedCell(gameService.getAnimatedCell());
   });
 
   const checkInHandler = (event: CheckInGameEvent) => {
-    //console.log(event);
     setShowBoard(true);
   };
 
   const rivalConnectedHandler = (event: RivalConnectedEvent) => {
-    //console.log(event);
     setShowJoinLink(false);
   };
 
   const gameStartedHandler = (event: GameStartedEvent) => {
     setGameEditMode(false);
     setShowNotificationGameStarted(true);
-    //console.log("show game started");
   };
 
   // const shotUpdate = (event: ShotUpdateEvent) => {
