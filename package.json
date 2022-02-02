@@ -7,6 +7,9 @@
     "start:dev": "next dev",
     "lint": "next lint"
   },
+  "cacheDirectories": [
+    ".next/cache"
+  ],
   "dependencies": {
     "@mindspace-io/utils": "^1.1.2",
     "bootstrap": "^5.1.3",
