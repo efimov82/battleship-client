@@ -25,7 +25,7 @@ import {
 } from "../types/common/events.responces";
 import { Cell } from "../classes/Cell";
 
-export const WS_GAME_HOST = "ws://test";
+export const WS_GAME_HOST = process.env.NEXT_PUBLIC_WS_GAME_HOST;
 export class GameService implements IGameService {
   private isBrowser = typeof window !== "undefined";
   private socket: any; //Socket;
