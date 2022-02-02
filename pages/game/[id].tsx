@@ -289,10 +289,9 @@ GamePage.getInitialProps = ({ query }) => {
 //   };
 // };
 
-// export default GamePage;
-export const getStaticProps = async ({ locale }) => ({
-  props: {
-    ...(await serverSideTranslations(locale, ["menu", "game", "popups"])),
-  },
-});
+// export const getStaticProps = async ({ locale }) => ({
+//   props: {
+//     ...(await serverSideTranslations(locale, ["menu", "game", "popups"])),
+//   },
+// });
 export default withTranslation("game")(GamePage);
