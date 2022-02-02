@@ -3,7 +3,7 @@ import {
   HookTuple,
   makeInjector,
   useInjectorHook,
-} from "@mindspace-io/utils";
+} from "@mindspace-io/react";
 import { GameService, WS_GAME_HOST } from "../services/game.service";
 import { SoundService } from "../services/sound.service";
 

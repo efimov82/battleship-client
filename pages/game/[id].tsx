@@ -35,6 +35,9 @@ import {
 import { GameErrorComponent } from "../../src/components/GameErrorComponent/GameErrorComponent";
 import { NotificationComponent } from "../../src/components/NotificationComponent/NotificationComponent";
 import GameOverComponent from "../../src/components/GameOverComponent/GameOverComponent";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { withTranslation } from "next-i18next";
+import { GetStaticPaths } from "next";
 
 // game/xxxx-xx-xxxx
 const GamePage = ({ query }) => {
@@ -279,10 +282,17 @@ GamePage.getInitialProps = ({ query }) => {
   return { query };
 };
 
-export default GamePage;
-// export const getStaticProps = async ({ locale }) => ({
-//   props: {
-//     ...(await serverSideTranslations(locale, ["menu", "game", "popups"])),
-//   },
-// });
-// export default withTranslation("game")(GamePage);
+export const getStaticPaths: GetStaticPaths<{ id: string }> = async () => {
+  return {
+    paths: [], //indicates that no page needs be created at build time
+    fallback: "blocking", //indicates the type of fallback
+  };
+};
+
+// export default GamePage;
+export const getStaticProps = async ({ locale }) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ["menu", "game", "popups"])),
+  },
+});
+export default withTranslation("game")(GamePage);
