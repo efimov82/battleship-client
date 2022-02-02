@@ -5,5 +5,6 @@ module.exports = {
   reactStrictMode: true,
   reloadOnPrerender: false,
   outputFileTracing: false,
+  optimizeFileTracing: false,
   i18n,
 };
