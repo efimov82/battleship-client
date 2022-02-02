@@ -9,8 +9,6 @@ import { SoundService } from "../services/sound.service";
 
 const host = process.env.NEXT_PUBLIC_WS_GAME_HOST;
 
-console.log("NEXT_PUBLIC_WS_GAME_HOST=", host);
-
 export const injector: DependencyInjector = makeInjector([
   { provide: WS_GAME_HOST, useValue: host },
   {

@@ -36,9 +36,7 @@ export class GameService implements IGameService {
   private animatedCell: Cell = null;
   #gameData: GameUpdatePayload;
 
-  constructor(private wsHost: string = WS_GAME_HOST) {
-    console.log("Game service created: ", this.wsHost);
-  }
+  constructor(private wsHost: string = WS_GAME_HOST) {}
 
   public setGameId(gameId: string) {
     this.gameId = gameId;
@@ -102,8 +100,6 @@ export class GameService implements IGameService {
    * @param accessToken
    */
   public checkIn(gameId: string | string[]): void {
-    console.log("checkIn", gameId);
-
     this.socket.emit(
       GameEventType.checkIn,
       { gameId, accessToken: this.accessToken },
@@ -131,8 +127,6 @@ export class GameService implements IGameService {
   }
 
   public joinGame(gameId: string, nickname: string, callback: Function): void {
-    console.log("joinGame", gameId, nickname);
-
     this.socket.emit(
       GameEventType.joinGame,
       {

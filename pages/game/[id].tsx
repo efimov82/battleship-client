@@ -65,7 +65,6 @@ const GamePage = ({ query }) => {
 
   let subscription: Subscription;
   let accessToken: string = null;
-  // let animatedCell: Cell = null;
 
   useMount(() => {
     accessToken = getItemFromStorage(ACCESS_TOKEN);
@@ -141,7 +140,6 @@ const GamePage = ({ query }) => {
   };
 
   const gameUpdate = (event: GameUpdateEvent) => {
-    console.log(event);
     const payload = event.getPayload();
 
     switch (payload.state) {
@@ -231,7 +229,6 @@ const GamePage = ({ query }) => {
   };
 
   useUnmount(() => {
-    console.log("unmount");
     subscription?.unsubscribe();
   });
 
